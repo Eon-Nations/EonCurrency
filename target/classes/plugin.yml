@@ -1,0 +1,30 @@
+name: EonCurrency
+version: 1.0
+main: me.squid.eoncurrency.Eoncurrency
+api-version: 1.16
+depend: [Vault]
+authors: [Squid]
+description: Makes the custom currency made for Eon Survival
+loadbefore: [Rankup, MobArena, ChatControl, AuctionHouse]
+load: STARTUP
+commands:
+  coins:
+    permission: eoncommands.coins
+    description: Give people coins cuz why not
+    aliases: [macoins]
+  economy:
+    permission: eoncommands.economy
+    description: Give people money cuz why not
+    aliases: [eco]
+  pay:
+    description: Pay other players
+    aliases: [payplayer]
+  balance:
+    description: Shows your balance
+    aliases: [bal]
+  shop:
+    description: Shop for items in the shop
+    aliases: [servershop]
+  baltop:
+    description: Shows the top balances in the server
+    aliases: [balancetop]
