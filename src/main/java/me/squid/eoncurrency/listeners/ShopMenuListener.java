@@ -48,6 +48,9 @@ public class ShopMenuListener implements Listener {
             e.setCancelled(true);
         }
 
+        // Balance Top Menu Listener
+        if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&b&lTop Balances"))) e.setCancelled(true);
+
         // Eon Normal Money Category Selector
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&5&lCategories"))){
             switch (Objects.requireNonNull(e.getCurrentItem()).getType()) {

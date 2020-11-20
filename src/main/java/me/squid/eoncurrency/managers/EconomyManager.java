@@ -6,43 +6,34 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.io.*;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class EconomyManager {
 
     private static HashMap<UUID, Double> currency = new HashMap<>();
 
-    @SuppressWarnings("ConstantConditions")
-    public static void saveCurrencyFile(Eoncurrency plugin) {
-        ConfigurationSection cs = plugin.getConfig().getConfigurationSection("Money");
-        for (String key : cs.getKeys(false)) {
-            UUID uuid = UUID.fromString(key);
-            double money = plugin.getConfig().getDouble("Money." + key + ".balance");
-            int coins = plugin.getConfig().getInt("Money." + key + ".coins");
+    public static void saveMapToFile() throws IOException {
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "currency.ser");
+        ObjectOutputStream output = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
 
-            if (money != currency.get(uuid)) {
-                cs.set(key + ".balance", currency.get(uuid));
-            }
-
-            if (coins != CoinManager.getCoins(uuid)) {
-                cs.set(key + ".coins", CoinManager.getCoins(uuid));
-            }
-            plugin.saveConfig();
-        }
+        output.writeObject(currency);
+        output.flush();
+        output.close();
     }
 
-    public static void loadCurrencyFile(Eoncurrency plugin) {
-        ConfigurationSection cs = plugin.getConfig().getConfigurationSection("Money");
-        for (String key : cs.getKeys(false)) {
-            UUID uuid = UUID.fromString(key);
-            double money = cs.getDouble(key + ".balance");
-            int coins = cs.getInt(key + ".coins");
-            currency.put(uuid, money);
-            CoinManager.setCoins(uuid, coins);
-        }
-        for (UUID u : currency.keySet()) {
-            System.out.println("[EonCurrency] Put " + u.toString() + " with $" + currency.get(u));
-        }
+    public static void loadMapFromFile() throws IOException, ClassNotFoundException {
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "currency.ser");
+        ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
+
+        Object readObject = input.readObject();
+        input.close();
+
+        if (!(readObject instanceof HashMap)) throw new IOException("Data is not in a hashmap");
+        //noinspection unchecked
+        currency = (HashMap<UUID, Double>) readObject;
     }
 
     public static Double getBalance(UUID uuid) {

@@ -22,13 +22,8 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        ConfigurationSection cs = plugin.getConfig().getConfigurationSection("Money");
 
-        if (cs.get(p.getUniqueId().toString() + ".balance") == null) {
-            cs.set(p.getUniqueId().toString() + ".balance", 0);
-            cs.set(p.getUniqueId().toString() + ".coins", 0);
-            EconomyManager.setBalance(p.getUniqueId(), 0);
-            CoinManager.setCoins(p.getUniqueId(), 0);
-        }
+        if (!CoinManager.exists(p.getUniqueId())) CoinManager.setCoins(p.getUniqueId(), 0);
+        if (!EconomyManager.exists(p.getUniqueId())) EconomyManager.setBalance(p.getUniqueId(), 0);
     }
 }

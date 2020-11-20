@@ -3,9 +3,12 @@ package me.squid.eoncurrency;
 import me.squid.eoncurrency.commands.*;
 import me.squid.eoncurrency.listeners.JoinListener;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
+import me.squid.eoncurrency.managers.CoinManager;
 import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.managers.VaultHook;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 public final class Eoncurrency extends JavaPlugin {
 
@@ -19,7 +22,7 @@ public final class Eoncurrency extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        saveCurrencyFile();
+        saveCurrencyFiles();
         unHookVault();
     }
 
@@ -40,14 +43,22 @@ public final class Eoncurrency extends JavaPlugin {
 
     public void setupFiles(){
         saveDefaultConfig();
-        createCurrencySection();
-        EconomyManager.loadCurrencyFile(this);
-        System.out.println("[EonCurrency] Data has been put into memory");
+        try {
+            EconomyManager.loadMapFromFile();
+            CoinManager.loadMapFromFile();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void saveCurrencyFile() {
-        EconomyManager.saveCurrencyFile(this);
-        System.out.println("[EonCurrency] Currency file have been saved");
+    private void saveCurrencyFiles() {
+        try {
+            EconomyManager.saveMapToFile();
+            CoinManager.saveMapToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void hookVault(){
@@ -58,12 +69,5 @@ public final class Eoncurrency extends JavaPlugin {
     public void unHookVault(){
         VaultHook vaultHook = new VaultHook();
         vaultHook.unhook();
-    }
-
-    private void createCurrencySection() {
-        if (getConfig().getConfigurationSection("Money") == null) {
-            getConfig().createSection("Money");
-            saveConfig();
-        }
     }
 }

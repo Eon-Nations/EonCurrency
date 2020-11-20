@@ -38,4 +38,25 @@ public class CoinManager {
         return !(coins.get(uuid) < amount);
     }
 
+    public static void saveMapToFile() throws IOException {
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "coins.ser");
+        ObjectOutputStream output = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
+
+        output.writeObject(coins);
+        output.flush();
+        output.close();
+    }
+
+    public static void loadMapFromFile() throws IOException, ClassNotFoundException {
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "coins.ser");
+        ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
+
+        Object readObject = input.readObject();
+        input.close();
+
+        if (!(readObject instanceof HashMap)) throw new IOException("Data is not in a hashmap");
+        //noinspection unchecked
+        coins = (HashMap<UUID, Integer>) readObject;
+    }
+
 }
