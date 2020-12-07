@@ -44,25 +44,23 @@ public class BaltopCommand implements CommandExecutor {
 
         for (UUID uuid : EconomyManager.getSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
-            if (plugin.getConfig().getConfigurationSection("Money." + p.getUniqueId().toString()) != null) {
-                Double money = EconomyManager.getBalance(p.getUniqueId());
+            Double money = EconomyManager.getBalance(p.getUniqueId());
 
-                ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) item.getItemMeta();
-                meta.setOwningPlayer(p);
-                meta.setDisplayName("#" + count + ". " + p.getName());
-                if (p.getPlayer() != null) {
-                    meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
-                }
-
-                List<String> lore = new ArrayList<>();
-                lore.add(Utils.chat("&aBalance: $" + money));
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-
-                inv.addItem(item);
-                count++;
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) item.getItemMeta();
+            meta.setOwningPlayer(p);
+            meta.setDisplayName("#" + count + ". " + p.getName());
+            if (p.getPlayer() != null) {
+                meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
             }
+
+            List<String> lore = new ArrayList<>();
+            lore.add(Utils.chat("&aBalance: $" + money));
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+
+            inv.addItem(item);
+            count++;
         }
 
         return inv;
