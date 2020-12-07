@@ -34,7 +34,7 @@ public class ShopMenuListener implements Listener {
 
         // Main Menu
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&5&lCurrency Menu"))) {
-            switch (Objects.requireNonNull(e.getCurrentItem()).getType()) {
+            switch (e.getCurrentItem().getType()) {
                 case EMERALD_BLOCK:
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
                     p.openInventory(ecoMenu.ShopCategory());
@@ -53,7 +53,7 @@ public class ShopMenuListener implements Listener {
 
         // Eon Normal Money Category Selector
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&5&lCategories"))){
-            switch (Objects.requireNonNull(e.getCurrentItem()).getType()) {
+            switch (e.getCurrentItem().getType()) {
                 case STONE_BRICKS:
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
                     p.openInventory(ecoMenu.BlockShop());
@@ -72,7 +72,7 @@ public class ShopMenuListener implements Listener {
 
         // Blocks Part of the Shop
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&f&lBlocks"))){
-            switch (Objects.requireNonNull(e.getCurrentItem()).getType()){
+            switch (e.getCurrentItem().getType()){
                 case SAND:
                 case COBBLESTONE:
                 case GRAVEL:
@@ -95,7 +95,7 @@ public class ShopMenuListener implements Listener {
 
         // Hopper Shop Menu
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lHopper Shop"))){
-            if (Objects.requireNonNull(e.getCurrentItem()).getType().equals(Material.HOPPER)){
+            if (e.getCurrentItem().getType().equals(Material.HOPPER)){
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 p.openInventory(ecoMenu.HopperAmount());
                 e.setCancelled(true);
@@ -104,7 +104,7 @@ public class ShopMenuListener implements Listener {
 
         // Hopper Amount Menu
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lHopper Amount"))) {
-            switch (Objects.requireNonNull(e.getCurrentItem()).getType()) {
+            switch (e.getCurrentItem().getType()) {
                 case GREEN_STAINED_GLASS_PANE:
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                     p.openInventory(ecoMenu.StackMenu(Material.HOPPER));
@@ -119,10 +119,10 @@ public class ShopMenuListener implements Listener {
 
         // Main Amount Menu
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lAmount"))){
-            int amount = Objects.requireNonNull(e.getCurrentItem()).getAmount();
+            int amount = e.getCurrentItem().getAmount();
             if (e.getCurrentItem().getType() == Material.GREEN_STAINED_GLASS_PANE) {
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
-                p.openInventory(ecoMenu.StackMenu(Objects.requireNonNull(Objects.requireNonNull(e.getClickedInventory()).getItem(12)).getType()));
+                p.openInventory(ecoMenu.StackMenu(((e.getClickedInventory()).getItem(12)).getType()));
             } else {
                 p.closeInventory();
                 addShopItemToPlayer(p, e.getCurrentItem().getType(), getPrice(e.getCurrentItem().getType()), amount);
@@ -133,7 +133,7 @@ public class ShopMenuListener implements Listener {
         // When the player clicks 64, this is the menu that shows up so they can buy lots of stacks
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lStacks"))) {
             for (int i = 0; i <= 8; i++){
-                if (Objects.requireNonNull(e.getCurrentItem()).getItemMeta().getDisplayName().equalsIgnoreCase(Objects.requireNonNull(Objects.requireNonNull(e.getClickedInventory()).getItem(i)).getItemMeta().getDisplayName())){
+                if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().getDisplayName())){
                     ItemStack item = new ItemStack(e.getCurrentItem().getType(), 64);
 
                     if (vaultEconManager.has(p, 64 * (i + 1) * getPrice(item.getType()))){

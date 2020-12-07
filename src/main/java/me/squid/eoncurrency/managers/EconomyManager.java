@@ -16,7 +16,7 @@ public class EconomyManager {
     private static HashMap<UUID, Double> currency = new HashMap<>();
 
     public static void saveMapToFile() throws IOException {
-        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "currency.ser");
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonCurrency").getDataFolder(), "currency.ser");
         ObjectOutputStream output = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
 
         output.writeObject(currency);
@@ -25,7 +25,7 @@ public class EconomyManager {
     }
 
     public static void loadMapFromFile() throws IOException, ClassNotFoundException {
-        File file = new File(Bukkit.getPluginManager().getPlugin("EonHomes").getDataFolder(), "currency.ser");
+        File file = new File(Bukkit.getPluginManager().getPlugin("EonCurrency").getDataFolder(), "currency.ser");
         ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
 
         Object readObject = input.readObject();

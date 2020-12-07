@@ -1,25 +1,25 @@
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\managers\VaultHook.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\BalanceCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\CoinCommandManager.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\ShopCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\BaltopCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\managers\VaultEconManager.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\coins\CoinResetCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\coins\CoinSetCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\currency\EcoResetCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\utils\Utils.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\EconomyCommandManager.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\PayCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\managers\EconomyManager.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\managers\CoinManager.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\listeners\ShopMenuListener.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\coins\CoinGetCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\listeners\JoinListener.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\menus\EcoMenu.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\Eoncurrency.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\SubCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\coins\CoinTakeCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\currency\EcoGetCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\coins\CoinGiveCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\currency\EcoGiveCommand.java
-E:\Money Dollerz\Projects\EonCurrency\src\main\java\me\squid\eoncurrency\commands\subcommands\currency\EcoTakeCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/managers/VaultHook.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/ShopCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinTakeCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinResetCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/managers/VaultEconManager.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/utils/Utils.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/managers/EconomyManager.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/PayCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinSetCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/currency/EcoGetCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/BaltopCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/currency/EcoResetCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/currency/EcoTakeCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/SubCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/EconomyCommandManager.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/managers/CoinManager.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/CoinCommandManager.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/listeners/JoinListener.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/BalanceCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/currency/EcoGiveCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/Eoncurrency.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/listeners/ShopMenuListener.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinGiveCommand.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/menus/EcoMenu.java
+/home/ronaldduck/Documents/EarthMCProjects/EonCurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinGetCommand.java

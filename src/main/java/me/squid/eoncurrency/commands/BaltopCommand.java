@@ -56,8 +56,8 @@ public class BaltopCommand implements CommandExecutor {
                 }
 
                 List<String> lore = new ArrayList<>();
-                lore.add("&aBalance: " + money);
-                item.setLore(lore);
+                lore.add(Utils.chat("&aBalance: $" + money));
+                meta.setLore(lore);
                 item.setItemMeta(meta);
 
                 inv.addItem(item);
