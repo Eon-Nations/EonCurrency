@@ -33,4 +33,18 @@ public class Utils {
         return item;
     }
 
+    public static void makeDummySlots(Inventory inv) {
+        ItemStack item;
+        item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("");
+        item.setItemMeta(meta);
+
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, item);
+            }
+        }
+    }
+
 }

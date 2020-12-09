@@ -133,7 +133,7 @@ public class ShopMenuListener implements Listener {
         // When the player clicks 64, this is the menu that shows up so they can buy lots of stacks
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lStacks"))) {
             for (int i = 0; i <= 8; i++){
-                if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().getDisplayName())){
+                if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().getDisplayName())) {
                     ItemStack item = new ItemStack(e.getCurrentItem().getType(), 64);
 
                     if (vaultEconManager.has(p, 64 * (i + 1) * getPrice(item.getType()))){

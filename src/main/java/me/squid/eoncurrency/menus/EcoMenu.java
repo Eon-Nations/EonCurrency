@@ -22,25 +22,27 @@ public class EcoMenu {
         Utils.createItem(inv, Material.CLOCK, 1, 14, "&a&lEco Info"
         , Utils.chat("&aBalance: $" + econManager.format(econManager.getBalance(p))));
         Utils.createItem(inv, Material.ZOMBIE_HEAD, 1, 16, "&b&lMob Arena Shop");
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
 
-    public Inventory Others(Player p) {
+    public Inventory Others(OfflinePlayer p) {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCurrency Menu"));
 
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 
-        skullMeta.setPlayerProfile(p.getPlayerProfile());
-        skullMeta.setDisplayName(p.getName());
+        if (p.getPlayer() != null) {
+            skullMeta.setPlayerProfile(p.getPlayer().getPlayerProfile());
+        }
+        skullMeta.setDisplayName(Utils.chat("&b" + p.getName()));
         item.setItemMeta(skullMeta);
 
-        inv.setItem(5, item);
+        inv.setItem(4, item);
         Utils.createItem(inv, Material.CLOCK, 1, 14, "&a&lEco Info"
                 , Utils.chat("&aBalance: $" + econManager.format(econManager.getBalance(p))));
-
-
+        Utils.makeDummySlots(inv);
         return inv;
     }
 
@@ -50,6 +52,7 @@ public class EcoMenu {
         Utils.createItem(inv, Material.STONE_BRICKS, 1, 12, "&f&lBlocks");
         Utils.createItem(inv, Material.OAK_BOAT, 1, 14, "&f&lMisc");
         Utils.createItem(inv, Material.HOPPER, 1, 16, "&7&lHopper Shop");
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -62,6 +65,7 @@ public class EcoMenu {
         Utils.createItem(inv, Material.GRAVEL, 1, 14, "&f&lGravel", Utils.chat("&5Price: $1"));
         Utils.createItem(inv, Material.DIRT, 1, 15, "&f&lDirt", Utils.chat("&5Price: $1"));
         Utils.createItem(inv, Material.STONE, 1, 16, "&f&lStone", Utils.chat("&5Price: $1.50"));
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -73,6 +77,7 @@ public class EcoMenu {
         Utils.createItem(inv, Material.ITEM_FRAME, 1, 13, "&f&lItem Frames", Utils.chat("&5Price: $2000"));
         Utils.createItem(inv, Material.END_CRYSTAL, 1, 15, "&f&lEnd Crystal", Utils.chat("&5Price: $1000"));
         Utils.createItem(inv, Material.SPONGE, 1, 17, "&f&lSponge", Utils.chat("&5Price: $1000"));
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -81,6 +86,7 @@ public class EcoMenu {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&a&lHopper Shop"));
 
         Utils.createItem(inv, Material.HOPPER, 1, 14, "&7&lHopper", Utils.chat("&bPrice: $1000"));
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -96,6 +102,7 @@ public class EcoMenu {
         Utils.createItem(inv, Material.HOPPER, 32, 7, "&f&l32");
         Utils.createItem(inv, Material.HOPPER, 64, 8, "&f&l64");
         Utils.createItem(inv, Material.GREEN_STAINED_GLASS_PANE, 1, 23, "&aBuy More");
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -111,6 +118,7 @@ public class EcoMenu {
         Utils.createItem(inv, clicked, 32, 16, "&f&l32");
         Utils.createItem(inv, clicked, 64, 17, "&f&l64");
         Utils.createItem(inv, Material.GREEN_STAINED_GLASS_PANE, 1, 23, "&aBuy More");
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
@@ -122,6 +130,7 @@ public class EcoMenu {
         for (int i = 2; i <= 9; i++){
             Utils.createItem(inv, clicked, 64, i, "&f&l" + i + " Stacks of Blocks");
         }
+        Utils.makeDummySlots(inv);
 
         return inv;
     }
