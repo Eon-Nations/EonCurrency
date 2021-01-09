@@ -192,7 +192,7 @@ public class ShopMenuListener implements Listener {
                 price = 100;
                 break;
             case ITEM_FRAME:
-                price = 2000;
+                price = 750;
                 break;
             case SPONGE:
                 price = 500;

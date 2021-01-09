@@ -2,6 +2,8 @@ package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.managers.EconomyManager;
+import me.squid.eoncurrency.managers.VaultEconManager;
+import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class BaltopCommand implements CommandExecutor {
@@ -44,12 +47,14 @@ public class BaltopCommand implements CommandExecutor {
 
         for (UUID uuid : EconomyManager.getSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
+            DecimalFormat df = new DecimalFormat("#.##");
             Double money = EconomyManager.getBalance(p.getUniqueId());
+            money = Double.parseDouble(df.format(money));
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
             meta.setOwningPlayer(p);
-            meta.setDisplayName("&a#" + count + ". &b" + p.getName());
+            meta.setDisplayName(Utils.chat("&a#" + count + ". &b" + p.getName()));
             if (p.getPlayer() != null) {
                 meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
             }
