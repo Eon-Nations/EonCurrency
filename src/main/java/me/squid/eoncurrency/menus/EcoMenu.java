@@ -76,7 +76,7 @@ public class EcoMenu {
         Utils.createItem(inv, Material.PHANTOM_MEMBRANE, 1, 11, "&f&lPhantom Membrane", Utils.chat("&5Price: $100"));
         Utils.createItem(inv, Material.ITEM_FRAME, 1, 13, "&f&lItem Frames", Utils.chat("&5Price: $750"));
         Utils.createItem(inv, Material.END_CRYSTAL, 1, 15, "&f&lEnd Crystal", Utils.chat("&5Price: $1000"));
-        Utils.createItem(inv, Material.SPONGE, 1, 17, "&f&lSponge", Utils.chat("&5Price: $1000"));
+        Utils.createItem(inv, Material.SHULKER_SHELL, 1, 17, "&f&lShulker Shell", Utils.chat("&5Price: $750"));
         Utils.makeDummySlots(inv);
 
         return inv;

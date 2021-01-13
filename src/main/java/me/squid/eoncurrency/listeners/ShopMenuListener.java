@@ -170,7 +170,7 @@ public class ShopMenuListener implements Listener {
         }
     }
 
-    public double getPrice(Material material){
+    public double getPrice(Material material) {
         double price = 1;
         switch (material){
             case HOPPER:
@@ -192,10 +192,8 @@ public class ShopMenuListener implements Listener {
                 price = 100;
                 break;
             case ITEM_FRAME:
+            case SHULKER_SHELL:
                 price = 750;
-                break;
-            case SPONGE:
-                price = 500;
                 break;
         }
         return price;
