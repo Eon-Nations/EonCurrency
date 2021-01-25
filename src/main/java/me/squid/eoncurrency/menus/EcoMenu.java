@@ -85,7 +85,7 @@ public class EcoMenu {
     public Inventory HopperShop(){
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&a&lHopper Shop"));
 
-        Utils.createItem(inv, Material.HOPPER, 1, 14, "&7&lHopper", Utils.chat("&bPrice: $1000"));
+        Utils.createItem(inv, Material.HOPPER, 1, 14, "&7&lHopper", Utils.chat("&bPrice: $500"));
         Utils.makeDummySlots(inv);
 
         return inv;

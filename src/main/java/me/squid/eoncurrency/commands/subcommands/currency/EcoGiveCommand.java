@@ -6,6 +6,7 @@ import me.squid.eoncurrency.managers.VaultEconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EcoGiveCommand extends SubCommand {
@@ -28,20 +29,20 @@ public class EcoGiveCommand extends SubCommand {
     }
 
     @Override
-    public void execute(Player p, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         if (args.length > 1){
             if (args.length == 3){
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null){
                     double amount = Double.parseDouble(args[2]);
                     vaultEconManager.depositPlayer(target, amount);
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has received $" + amount));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has received $" + amount));
                 } else {
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
                 }
             }
         } else if (args.length == 1){
-            p.sendMessage(ChatColor.BLUE + getSyntax());
+            sender.sendMessage(ChatColor.BLUE + getSyntax());
         }
     }
 }

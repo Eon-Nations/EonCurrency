@@ -5,6 +5,7 @@ import me.squid.eoncurrency.managers.CoinManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CoinResetCommand extends SubCommand {
@@ -25,20 +26,20 @@ public class CoinResetCommand extends SubCommand {
     }
 
     @Override
-    public void execute(Player p, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
 
         if (args.length > 1){
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null){
                     CoinManager.setCoins(target.getUniqueId(), 0);
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aYou have reset " + target.getName() + "'s balance to $0"));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aYou have reset " + target.getName() + "'s balance to $0"));
                 } else {
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
                 }
             }
         } else if (args.length == 1){
-            p.sendMessage(Utils.chat(ChatColor.BLUE + getSyntax()));
+            sender.sendMessage(Utils.chat(ChatColor.BLUE + getSyntax()));
         }
     }
 }

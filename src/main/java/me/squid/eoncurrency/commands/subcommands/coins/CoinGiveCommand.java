@@ -5,6 +5,7 @@ import me.squid.eoncurrency.managers.CoinManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CoinGiveCommand extends SubCommand {
@@ -26,21 +27,21 @@ public class CoinGiveCommand extends SubCommand {
     }
 
     @Override
-    public void execute(Player p, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
 
         if (args.length > 1){
-            if (args.length == 3){
+            if (args.length == 3) {
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null){
                     int amount = Integer.parseInt(args[2]);
                     CoinManager.addCoins(target.getUniqueId(), amount);
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has received " + amount + " coins"));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has received " + amount + " coins"));
                 } else {
-                    p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
+                    sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
                 }
             }
         } else if (args.length == 1){
-            p.sendMessage(Utils.chat(ChatColor.BLUE + getSyntax()));
+            sender.sendMessage(Utils.chat(ChatColor.BLUE + getSyntax()));
         }
     }
 }
