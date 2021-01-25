@@ -174,6 +174,8 @@ public class ShopMenuListener implements Listener {
         double price = 1;
         switch (material){
             case HOPPER:
+                price = 500;
+                break;
             case END_CRYSTAL:
                 price = 1000;
                 break;
