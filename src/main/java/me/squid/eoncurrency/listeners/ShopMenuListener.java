@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
@@ -87,19 +88,22 @@ public class ShopMenuListener implements Listener {
 
         // Misc Shop
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&f&lMisc"))) {
-            if (!e.getCurrentItem().getType().equals(Material.BLACK_STAINED_GLASS)) {
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                p.openInventory(ecoMenu.QuantityMenu(e.getCurrentItem().getType()));
+            switch (e.getCurrentItem().getType()) {
+                case PHANTOM_MEMBRANE, ITEM_FRAME, END_CRYSTAL, SHULKER_SHELL -> {
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                    p.openInventory(ecoMenu.QuantityMenu(e.getCurrentItem().getType()));
+                }
             }
+            e.setCancelled(true);
         }
 
         // Hopper Shop Menu
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lHopper Shop"))){
-            if (e.getCurrentItem().getType().equals(Material.HOPPER)){
+            if (e.getCurrentItem().getType().equals(Material.HOPPER)) {
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
                 p.openInventory(ecoMenu.HopperAmount());
-                e.setCancelled(true);
             }
+            e.setCancelled(true);
         }
 
         // Hopper Amount Menu
@@ -133,7 +137,7 @@ public class ShopMenuListener implements Listener {
         // When the player clicks 64, this is the menu that shows up so they can buy lots of stacks
         if (e.getView().getTitle().equalsIgnoreCase(Utils.chat("&a&lStacks"))) {
             for (int i = 0; i <= 8; i++){
-                if (e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().getDisplayName())) {
+                if (e.getCurrentItem().getItemMeta().displayName().toString().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().displayName().toString())) {
                     ItemStack item = new ItemStack(e.getCurrentItem().getType(), 64);
 
                     if (vaultEconManager.has(p, 64 * (i + 1) * getPrice(item.getType()))){
@@ -171,33 +175,18 @@ public class ShopMenuListener implements Listener {
     }
 
     public double getPrice(Material material) {
-        double price = 1;
-        switch (material){
-            case HOPPER:
-                price = 500;
-                break;
-            case END_CRYSTAL:
-                price = 1000;
-                break;
-            case STONE:
-                price = 1.5;
-                break;
-            case GRAVEL:
-            case DIRT:
-            case COBBLESTONE:
-                price = 1;
-                break;
-            case SAND:
-                price = 2;
-                break;
-            case PHANTOM_MEMBRANE:
-                price = 100;
-                break;
-            case ITEM_FRAME:
-            case SHULKER_SHELL:
-                price = 750;
-                break;
-        }
-        return price;
+        return switch (material) {
+            case HOPPER -> plugin.getConfig().getInt("hopper");
+            case END_CRYSTAL -> plugin.getConfig().getInt("end_crystal");
+            case STONE -> plugin.getConfig().getInt("stone");
+            case GRAVEL -> plugin.getConfig().getInt("gravel");
+            case DIRT -> plugin.getConfig().getInt("dirt");
+            case COBBLESTONE -> plugin.getConfig().getInt("cobblestone");
+            case SAND -> plugin.getConfig().getInt("sand");
+            case PHANTOM_MEMBRANE -> plugin.getConfig().getInt("phantom");
+            case ITEM_FRAME -> plugin.getConfig().getInt("item_frame");
+            case SHULKER_SHELL -> plugin.getConfig().getInt("shulker");
+            default -> 1;
+        };
     }
 }

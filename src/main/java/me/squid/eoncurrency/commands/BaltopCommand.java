@@ -5,6 +5,7 @@ import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.managers.VaultEconManager;
 import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -17,8 +18,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 
 public class BaltopCommand implements CommandExecutor {
 
@@ -54,14 +57,14 @@ public class BaltopCommand implements CommandExecutor {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
             meta.setOwningPlayer(p);
-            meta.setDisplayName(Utils.chat("&a#" + count + ". &b" + p.getName()));
+            meta.displayName(Component.text(Utils.chat("&a#" + count + ". &b" + p.getName())));
             if (p.getPlayer() != null) {
                 meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
             }
 
-            List<String> lore = new ArrayList<>();
-            lore.add(Utils.chat("&aBalance: $" + money));
-            meta.setLore(lore);
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text(Utils.chat("&aBalance: $" + money)));
+            meta.lore(lore);
             item.setItemMeta(meta);
 
             inv.addItem(item);

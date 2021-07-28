@@ -9,8 +9,8 @@
         <module name="eoncurrency" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="eoncurrency" target="1.8" />
+    <bytecodeTargetLevel target="16">
+      <module name="eoncurrency" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

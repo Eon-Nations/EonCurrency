@@ -1,0 +1,9 @@
+hopper: 1000
+end_crystal: 1000
+stone: 1.5
+gravel: 1.5
+dirt: 1.5
+cobblestone: 1
+sand: 2
+phantom: 100
+item_frame: 750

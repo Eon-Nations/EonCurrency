@@ -4,19 +4,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class Utils {
 
-    public static String chat (String s){
+    public static @NotNull String chat (String s){
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
