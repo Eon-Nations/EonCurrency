@@ -1,28 +1,32 @@
 package me.squid.eoncurrency;
 
 import me.squid.eoncurrency.commands.*;
+import me.squid.eoncurrency.listeners.JobsEventListener;
 import me.squid.eoncurrency.listeners.JoinListener;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
-import me.squid.eoncurrency.managers.CoinManager;
-import me.squid.eoncurrency.managers.EconomyManager;
-import me.squid.eoncurrency.managers.VaultHook;
+import me.squid.eoncurrency.listeners.WorldInteractListener;
+import me.squid.eoncurrency.managers.*;
+import me.squid.eoncurrency.menus.JobMenu;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
+import java.sql.SQLException;
 
 public final class Eoncurrency extends JavaPlugin {
 
+    public MySQL mySQL;
+
     @Override
     public void onEnable() {
-        setupFiles();
+        setupSQL();
         registerCommands();
         registerListeners();
+        registerManagers();
         hookVault();
     }
 
     @Override
     public void onDisable() {
-        saveCurrencyFiles();
+        mySQL.disconnect();
         unHookVault();
     }
 
@@ -34,31 +38,30 @@ public final class Eoncurrency extends JavaPlugin {
         new BalanceCommand(this);
         new ShopCommand(this);
         new BaltopCommand(this);
+        new JobsCommand(this);
     }
 
     public void registerListeners() {
         new JoinListener(this);
         new ShopMenuListener(this);
+        new WorldInteractListener(this);
+        new JobsEventListener(this);
+        new CurrencySQLManager(this);
+        new JobMenu(this);
     }
 
-    public void setupFiles(){
-        saveDefaultConfig();
-        try {
-            EconomyManager.loadMapFromFile();
-            CoinManager.loadMapFromFile();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void registerManagers() {
+        new JobsManager(this);
+        new JobSQLManager(this);
     }
 
-    private void saveCurrencyFiles() {
+    public void setupSQL() {
+        mySQL = new MySQL(this);
         try {
-            EconomyManager.saveMapToFile();
-            CoinManager.saveMapToFile();
-        } catch (IOException e) {
+            mySQL.connectToDatabase();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void hookVault(){

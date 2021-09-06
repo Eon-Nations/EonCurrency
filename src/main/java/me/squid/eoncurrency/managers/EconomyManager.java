@@ -1,39 +1,32 @@
 package me.squid.eoncurrency.managers;
 
 import me.squid.eoncurrency.Eoncurrency;
+import me.squid.eoncurrency.tasks.SaveCurrencyToSQLTask;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.io.*;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class EconomyManager {
 
-    private static HashMap<UUID, Double> currency = new HashMap<>();
+    private static HashMap<UUID, Double> currency;
 
-    public static void saveMapToFile() throws IOException {
-        File file = new File(Bukkit.getPluginManager().getPlugin("EonCurrency").getDataFolder(), "currency.ser");
-        ObjectOutputStream output = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
-
-        output.writeObject(currency);
-        output.flush();
-        output.close();
+    public EconomyManager(Eoncurrency plugin) {
+        currency = new HashMap<>();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new SaveCurrencyToSQLTask(currency), 0L, 60L * 1000L * 5L); // Every 5 minutes
     }
 
-    public static void loadMapFromFile() throws IOException, ClassNotFoundException {
-        File file = new File(Bukkit.getPluginManager().getPlugin("EonCurrency").getDataFolder(), "currency.ser");
-        ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
+    public static void loadPlayerIntoMap(Player player) {
+        SQLManager sqlManager = SQLManager.getInstance();
+        if (currency == null) currency = new HashMap<>();
 
-        Object readObject = input.readObject();
-        input.close();
+        double balance = sqlManager.getBalance(player.getUniqueId());
+        currency.put(player.getUniqueId(), balance);
+    }
 
-        if (!(readObject instanceof HashMap)) throw new IOException("Data is not in a hashmap");
-        //noinspection unchecked
-        currency = (HashMap<UUID, Double>) readObject;
+    public static void savePlayerToSQL(Player player) {
+        SQLManager sqlManager = SQLManager.getInstance();
+        sqlManager.updateBalance(player.getUniqueId());
     }
 
     public static Double getBalance(UUID uuid) {
@@ -46,7 +39,7 @@ public class EconomyManager {
 
     public static void addBalance(UUID uuid, double amount){
         if (!currency.containsKey(uuid)) currency.put(uuid, amount);
-        else currency.put(uuid, getBalance(uuid) + amount);
+        else setBalance(uuid, getBalance(uuid) + amount);
     }
 
     public static void removeCurrency(UUID uuid, double amount){
