@@ -43,17 +43,15 @@ public class JobsManager {
     }
 
     public static void loadPlayerFromSQL(Player p) {
-        SQLManager sqlManager = SQLManager.getInstance();
-        Job job = sqlManager.getPlayerJob(p.getUniqueId());
+        Job job = SQLManager.getPlayerJob(p.getUniqueId());
         addPlayerToJob(p.getUniqueId(), job);
     }
 
     public static void loadPlayerToSQL(Player p) {
-        SQLManager sqlManager = SQLManager.getInstance();
         Job job = playerJobs.get(p.getUniqueId());
 
-        if (sqlManager.jobPlayerExists(p.getUniqueId())) sqlManager.updatePlayerJob(p.getUniqueId(), job);
-        else sqlManager.uploadPlayerJob(p.getUniqueId(), job);
+        if (SQLManager.jobPlayerExists(p.getUniqueId())) SQLManager.updatePlayerJob(p.getUniqueId(), job);
+        else SQLManager.uploadPlayerJob(p.getUniqueId(), job);
         removePlayerFromJob(p.getUniqueId());
     }
 

@@ -16,9 +16,8 @@ public class SaveCurrencyToSQLTask implements Runnable {
 
     @Override
     public void run() {
-        SQLManager sqlManager = SQLManager.getInstance();
         for (UUID uuid : currency.keySet()) {
-            if (sqlManager.getBalance(uuid) != currency.get(uuid)) sqlManager.updateBalance(uuid);
+            if (SQLManager.getBalance(uuid) != currency.get(uuid)) SQLManager.updateBalance(uuid);
         }
         Bukkit.getServer().getLogger().info("Successfully saved players to the SQL Database");
     }

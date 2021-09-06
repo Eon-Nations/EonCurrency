@@ -9,15 +9,11 @@ import me.squid.eoncurrency.managers.*;
 import me.squid.eoncurrency.menus.JobMenu;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
-
 public final class Eoncurrency extends JavaPlugin {
-
-    public MySQL mySQL;
 
     @Override
     public void onEnable() {
-        setupSQL();
+        saveDefaultConfig();
         registerCommands();
         registerListeners();
         registerManagers();
@@ -26,7 +22,6 @@ public final class Eoncurrency extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        mySQL.disconnect();
         unHookVault();
     }
 
@@ -46,27 +41,18 @@ public final class Eoncurrency extends JavaPlugin {
         new ShopMenuListener(this);
         new WorldInteractListener(this);
         new JobsEventListener(this);
-        new CurrencySQLManager(this);
         new JobMenu(this);
     }
 
     public void registerManagers() {
         new JobsManager(this);
-        new JobSQLManager(this);
-    }
-
-    public void setupSQL() {
-        mySQL = new MySQL(this);
-        try {
-            mySQL.connectToDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        new SQLManager(this);
     }
 
     public void hookVault(){
         VaultHook vaultHook = new VaultHook();
         vaultHook.hook();
+        vaultHook = null;
     }
 
     public void unHookVault(){

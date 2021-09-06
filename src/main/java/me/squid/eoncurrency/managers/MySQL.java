@@ -12,7 +12,7 @@ public class MySQL {
     String host, port, database, user, password;
     Connection connection;
 
-    public MySQL(Eoncurrency plugin){
+    public MySQL(Eoncurrency plugin) {
         this.plugin = plugin;
         host = plugin.getConfig().getString("host");
         port = plugin.getConfig().getString("port");
