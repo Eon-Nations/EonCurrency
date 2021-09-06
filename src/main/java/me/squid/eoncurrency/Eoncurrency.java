@@ -1,11 +1,14 @@
 package me.squid.eoncurrency;
 
 import me.squid.eoncurrency.commands.*;
+import me.squid.eoncurrency.jobs.JobFileManager;
 import me.squid.eoncurrency.listeners.JobsEventListener;
 import me.squid.eoncurrency.listeners.JoinListener;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
 import me.squid.eoncurrency.listeners.WorldInteractListener;
-import me.squid.eoncurrency.managers.*;
+import me.squid.eoncurrency.managers.JobsManager;
+import me.squid.eoncurrency.managers.SQLManager;
+import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.menus.JobMenu;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,7 +43,7 @@ public final class Eoncurrency extends JavaPlugin {
         new JoinListener(this);
         new ShopMenuListener(this);
         new WorldInteractListener(this);
-        new JobsEventListener(this);
+        new JobsEventListener(this, new JobFileManager(this));
         new JobMenu(this);
     }
 

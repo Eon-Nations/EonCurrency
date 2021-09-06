@@ -2,6 +2,8 @@ package me.squid.eoncurrency.jobs;
 
 import me.squid.eoncurrency.Eoncurrency;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,11 +51,17 @@ public class JobFileManager {
     }
 
     public double getPriceForAction(String action, Job job, Material material) {
-        return 0;
+        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+        return config.getDouble(action + "." + material.name().toLowerCase() + ".price");
     }
 
     public double getExperienceForAction(String action, Job job, Material material) {
-        return 0;
+        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+        return config.getDouble(action + "." + material.name().toLowerCase() + ".experience");
     }
 
 }
