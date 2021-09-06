@@ -55,7 +55,6 @@ public final class Eoncurrency extends JavaPlugin {
     public void hookVault(){
         VaultHook vaultHook = new VaultHook();
         vaultHook.hook();
-        vaultHook = null;
     }
 
     public void unHookVault(){

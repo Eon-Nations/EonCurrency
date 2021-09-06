@@ -8,7 +8,6 @@ public enum Events {
     BREED,
     MILK,
     SHEER,
-    TAME,
     ENCHANT,
     BREW,
     REPAIR,

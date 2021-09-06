@@ -40,9 +40,12 @@ public class JobEvent {
                 return events;
             }
             case FARMER -> {
-                Events[] events = new Events[2];
+                Events[] events = new Events[5];
                 events[0] = Events.BREAK;
                 events[1] = Events.PLACE;
+                events[2] = Events.BREED;
+                events[3] = Events.MILK;
+                events[4] = Events.SHEER;
                 return events;
             }
             case HUNTER -> {

@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,10 +60,9 @@ public class JobMenu implements Listener {
                 // switch (e.getCurrentItem().getType()) {
                 //     // TODO Fill this in with info inventories
                 // }
-                p.closeInventory();
                 p.sendMessage(Component.text("Almost there"));
             }
-
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
             e.setCancelled(true);
         }
     }
