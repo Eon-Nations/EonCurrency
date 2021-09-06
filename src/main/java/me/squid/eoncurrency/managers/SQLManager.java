@@ -4,7 +4,6 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobEvent;
 import me.squid.eoncurrency.jobs.Jobs;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,18 +14,17 @@ import java.util.UUID;
 public class SQLManager {
 
     Eoncurrency plugin;
-    private static SQLManager instance;
     private static MySQL sql;
 
-    public static SQLManager getInstance() {
-        if (instance == null) {
-            instance = new SQLManager();
-            sql = new MySQL(JavaPlugin.getPlugin(Eoncurrency.class));
+    public SQLManager(Eoncurrency plugin) {
+        sql = new MySQL(plugin);
+        try {
+            sql.connectToDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return instance;
+        createTables();
     }
-
-    private SQLManager() {}
 
     public void createTables() {
         String[] sqlQueries = {"CREATE TABLE IF NOT EXISTS currency " + "(UUID VARCHAR(100),MONEY FLOAT(10),PRIMARY KEY(UUID))"
@@ -41,7 +39,7 @@ public class SQLManager {
         }
     }
 
-    public void addNewCurencyPlayer(UUID uuid) {
+    public static void addNewCurencyPlayer(UUID uuid) {
         try {
             if (!currencyPlayerExists(uuid)) {
                 PreparedStatement ps = sql.getConnection().prepareStatement("INSERT IGNORE INTO currency" + " (UUID, MONEY) VALUES (?, ?)");
@@ -54,7 +52,7 @@ public class SQLManager {
         }
     }
 
-    public void updateBalance(UUID uuid) {
+    public static void updateBalance(UUID uuid) {
         try {
             if (!currencyPlayerExists(uuid)) addNewCurencyPlayer(uuid);
             else {
@@ -68,7 +66,7 @@ public class SQLManager {
         }
     }
 
-    public double getBalance(UUID uuid) {
+    public static double getBalance(UUID uuid) {
         try {
             if (currencyPlayerExists(uuid)) {
                 PreparedStatement ps = sql.getConnection().prepareStatement("SELECT MONEY FROM currency WHERE UUID=?");
@@ -82,7 +80,7 @@ public class SQLManager {
         return 0;
     }
 
-    private boolean currencyPlayerExists(UUID uuid) {
+    private static boolean currencyPlayerExists(UUID uuid) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM currency WHERE UUID=?");
             ps.setString(1, uuid.toString());
@@ -94,7 +92,7 @@ public class SQLManager {
         return false;
     }
 
-    public void uploadPlayerJob(UUID uuid, Job job) {
+    public static void uploadPlayerJob(UUID uuid, Job job) {
         if (!jobPlayerExists(uuid)) {
             try {
                 PreparedStatement ps = sql.getConnection().prepareStatement("INSERT IGNORE INTO jobs" + " (UUID, JOB, EXPLEVEL, LVL) VALUES (?, ?, ?, ?)");
@@ -109,7 +107,7 @@ public class SQLManager {
         }
     }
 
-    public void updatePlayerJob(UUID uuid, Job job) {
+    public static void updatePlayerJob(UUID uuid, Job job) {
         if (JobsManager.playerExists(uuid)) {
             try {
                 PreparedStatement ps = sql.getConnection().prepareStatement("UPDATE jobs SET JOB=?, EXPLEVEL=?, LVL=? WHERE UUID=?");
@@ -124,7 +122,7 @@ public class SQLManager {
         } else uploadPlayerJob(uuid, job);
     }
 
-    public Job getPlayerJob(UUID uuid) {
+    public static Job getPlayerJob(UUID uuid) {
         if (jobPlayerExists(uuid)) {
             try {
                 PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM jobs WHERE UUID=?");
@@ -143,7 +141,7 @@ public class SQLManager {
         return null;
     }
 
-    public boolean jobPlayerExists(UUID uuid) {
+    public static boolean jobPlayerExists(UUID uuid) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM jobs WHERE UUID=?");
             ps.setString(1, uuid.toString());
@@ -155,7 +153,7 @@ public class SQLManager {
         return false;
     }
 
-    private void reconnectToDatabase(SQLException e) {
+    private static void reconnectToDatabase(SQLException e) {
         if (e instanceof SQLNonTransientConnectionException) {
             sql.disconnect();
             try {
