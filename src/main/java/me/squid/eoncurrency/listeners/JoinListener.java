@@ -3,8 +3,8 @@ package me.squid.eoncurrency.listeners;
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.managers.CoinManager;
 import me.squid.eoncurrency.managers.EconomyManager;
-import me.squid.eoncurrency.managers.JobsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +25,5 @@ public class JoinListener implements Listener {
 
         if (!CoinManager.exists(p.getUniqueId())) CoinManager.setCoins(p.getUniqueId(), 0);
         if (!EconomyManager.exists(p.getUniqueId())) EconomyManager.setBalance(p.getUniqueId(), 0);
-
-        JobsManager.testFunction(p);
     }
 }
