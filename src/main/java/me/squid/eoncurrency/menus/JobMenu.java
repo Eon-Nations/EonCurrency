@@ -1,10 +1,10 @@
 package me.squid.eoncurrency.menus;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.jobs.JobEvent;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.Jobs;
 import me.squid.eoncurrency.managers.JobsManager;
+import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -42,15 +42,21 @@ public class JobMenu implements Listener {
                     case WOODEN_AXE -> enumJob = Jobs.WOODCUTTER;
                     case FISHING_ROD -> enumJob = Jobs.FISHERMAN;
                     case ANVIL -> enumJob = Jobs.BLACKSMITH;
-                    case BOW -> enumJob = Jobs.ALCHEMIST;
+                    case BOW -> enumJob = Jobs.ENCHANTER;
                     case WOODEN_SHOVEL -> enumJob = Jobs.DIGGER;
                     case DIAMOND_PICKAXE -> enumJob = Jobs.MINER;
                     case GOLDEN_HOE -> enumJob = Jobs.FARMER;
+                    case BARRIER -> {
+                        enumJob = null;
+                        JobsManager.removePlayerFromJob(p.getUniqueId());
+                        p.sendMessage(Component.text("Removed from job"));
+                        p.closeInventory();
+                    }
                     default -> enumJob = null;
                 }
 
                 if (enumJob != null) {
-                    Job job = new Job(enumJob, 0, 0.0, JobEvent.getEventsFromJob(enumJob));
+                    Job job = new Job(enumJob, 0, 0.0, SQLManager.getEventsFromJob(enumJob));
                     JobsManager.addPlayerToJob(p.getUniqueId(), job);
                     p.closeInventory();
                     p.sendMessage(Component.text("Joined job: " + enumJob.name().toLowerCase()));
@@ -80,7 +86,7 @@ public class JobMenu implements Listener {
         lore.add(Component.text("Left click for more info"));
 
         Utils.createItem(inventory, Material.BARRIER, 1, 5,
-                Component.text("Leave Job").color(TextColor.color(255, 0, 0)), lore);
+                Component.text("Leave Job").color(TextColor.color(255, 0, 0)));
         Utils.createItem(inventory, Material.WOODEN_AXE, 1, 11,
                 Component.text("Woodcutter").color(TextColor.color(160, 160, 160)), lore);
         Utils.createItem(inventory, Material.FISHING_ROD, 1, 12,

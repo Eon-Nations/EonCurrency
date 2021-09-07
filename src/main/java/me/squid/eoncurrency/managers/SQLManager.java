@@ -1,8 +1,8 @@
 package me.squid.eoncurrency.managers;
 
 import me.squid.eoncurrency.Eoncurrency;
+import me.squid.eoncurrency.jobs.Events;
 import me.squid.eoncurrency.jobs.Job;
-import me.squid.eoncurrency.jobs.JobEvent;
 import me.squid.eoncurrency.jobs.Jobs;
 
 import java.sql.PreparedStatement;
@@ -132,7 +132,7 @@ public class SQLManager {
                     Jobs job = Jobs.valueOf(rs.getString("JOB").toUpperCase());
                     double exp = rs.getDouble("EXPLEVEL");
                     int level = rs.getInt("LVL");
-                    return new Job(job, level, exp, JobEvent.getEventsFromJob(job));
+                    return new Job(job, level, exp, getEventsFromJob(job));
                 }
             } catch (SQLException e) {
                 reconnectToDatabase(e);
@@ -162,5 +162,48 @@ public class SQLManager {
                 ex.printStackTrace();
             }
         } else e.printStackTrace();
+    }
+
+    public static Events[] getEventsFromJob(Jobs job) {
+
+        switch (job) {
+            case MINER, DIGGER, WOODCUTTER -> {
+                Events[] events = new Events[1];
+                events[0] = Events.BREAK;
+                return events;
+            }
+            case FISHERMAN -> {
+                Events[] events = new Events[1];
+                events[0] = Events.FISH;
+                return events;
+            }
+            case FARMER -> {
+                Events[] events = new Events[5];
+                events[0] = Events.BREAK;
+                events[1] = Events.PLACE;
+                events[2] = Events.BREED;
+                events[3] = Events.MILK;
+                events[4] = Events.SHEAR;
+                return events;
+            }
+            case HUNTER -> {
+                Events[] events = new Events[1];
+                events[0] = Events.KILL;
+                return events;
+            }
+
+            case ENCHANTER -> {
+                Events[] events = new Events[1];
+                events[0] = Events.ENCHANT;
+                return events;
+            }
+            case BLACKSMITH -> {
+                Events[] events = new Events[2];
+                events[0] = Events.CRAFT;
+                events[1] = Events.SMELT;
+                return events;
+            }
+        }
+        return null;
     }
 }

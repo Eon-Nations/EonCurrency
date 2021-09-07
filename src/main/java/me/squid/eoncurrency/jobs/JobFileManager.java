@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.jobs;
 
 import me.squid.eoncurrency.Eoncurrency;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -50,18 +49,18 @@ public class JobFileManager {
         }
     }
 
-    public double getPriceForAction(String action, Job job, Material material) {
+    public double getPriceForAction(String action, Job job, String material) {
         File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        return config.getDouble(action + "." + material.name().toLowerCase() + ".price");
+        return config.getDouble(action + "." + material.toLowerCase() + ".income");
     }
 
-    public double getExperienceForAction(String action, Job job, Material material) {
+    public double getExperienceForAction(String action, Job job, String material) {
         File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        return config.getDouble(action + "." + material.name().toLowerCase() + ".experience");
+        return config.getDouble(action + "." + material.toLowerCase() + ".experience");
     }
 
 }

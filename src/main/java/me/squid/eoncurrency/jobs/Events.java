@@ -7,9 +7,8 @@ public enum Events {
     KILL,
     BREED,
     MILK,
-    SHEER,
+    SHEAR,
     ENCHANT,
-    BREW,
-    REPAIR,
-    CRAFT
+    CRAFT,
+    SMELT
 }

@@ -1,7 +1,7 @@
 package me.squid.eoncurrency.jobs;
 
 public enum Jobs {
-    ALCHEMIST,
+    ENCHANTER,
     DIGGER,
     HUNTER,
     MINER,

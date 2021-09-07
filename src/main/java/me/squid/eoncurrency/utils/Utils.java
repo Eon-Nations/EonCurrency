@@ -44,6 +44,17 @@ public class Utils {
         return item;
     }
 
+    public static ItemStack createItem(Inventory inv, Material material, int amount, int invSlot, Component displayName){
+        ItemStack item;
+        item = new ItemStack(material, amount);
+        ItemMeta meta = item.getItemMeta();
+
+        meta.displayName(displayName);
+        item.setItemMeta(meta);
+        inv.setItem(invSlot - 1, item);
+        return item;
+    }
+
     public static void makeDummySlots(Inventory inv) {
         ItemStack item;
         item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
