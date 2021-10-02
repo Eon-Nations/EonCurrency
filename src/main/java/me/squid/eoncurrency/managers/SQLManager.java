@@ -99,7 +99,7 @@ public class SQLManager {
                 ps.setString(1, uuid.toString());
                 ps.setString(2, job.getEnumJob().name().toLowerCase());
                 ps.setDouble(3, job.getExp());
-                ps.setInt(4, job.getLevel());
+                ps.setLong(4, job.getLevel());
                 ps.executeUpdate();
             } catch (SQLException e) {
                 reconnectToDatabase(e);
@@ -113,7 +113,7 @@ public class SQLManager {
                 PreparedStatement ps = sql.getConnection().prepareStatement("UPDATE jobs SET JOB=?, EXPLEVEL=?, LVL=? WHERE UUID=?");
                 ps.setString(1, job.getEnumJob().name().toLowerCase());
                 ps.setDouble(2, job.getExp());
-                ps.setInt(3, job.getLevel());
+                ps.setLong(3, job.getLevel());
                 ps.setString(4, uuid.toString());
                 ps.executeUpdate();
             } catch (SQLException e) {

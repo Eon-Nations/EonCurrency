@@ -1,8 +1,8 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.menus.JobMenu;
-import net.kyori.adventure.text.Component;
+import me.squid.eoncurrency.menus.JobChoiceMenu;
+import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,23 +12,20 @@ import org.jetbrains.annotations.NotNull;
 public class JobsCommand implements CommandExecutor {
 
     Eoncurrency plugin;
-    JobMenu jobMenu;
+    JobChoiceMenu jobChoiceMenu;
 
-    public JobsCommand(Eoncurrency plugin) {
+    public JobsCommand(Eoncurrency plugin, JobChoiceMenu menu) {
+        jobChoiceMenu = menu;
         this.plugin = plugin;
         plugin.getCommand("jobmenu").setExecutor(this);
-        jobMenu = new JobMenu(plugin);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
         Player p = (Player) commandSender;
-        if (args.length == 0) {
-            p.sendMessage(Component.text("Opening jobs menu..."));
-            p.openInventory(jobMenu.getInv());
-        }
-
+        p.openInventory(jobChoiceMenu.getInv());
+        Utils.playHarpSoundAtPlayer(p);
         return true;
     }
 }

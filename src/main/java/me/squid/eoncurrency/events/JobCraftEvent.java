@@ -6,38 +6,35 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class JobBurnEvent extends Event {
+public class JobCraftEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
     Player p;
-    Material material;
     int amount;
     Job job;
+    Material type;
 
-    public JobBurnEvent(Player p, Material material, int amount, Job job) {
+    public JobCraftEvent(Player p, int amount, Material type) {
         super(true);
         this.p = p;
-        this.material = material;
         this.amount = amount;
-        this.job = job;
+        this.type = type;
     }
 
     public Player getPlayer() {
         return p;
     }
 
-    public Material getMaterial() {
-        return material;
-    }
-
     public int getAmount() {
         return amount;
     }
 
-    public Job getJob() {
-        return job;
+    public Material getType() {
+        return type;
     }
+
+    public Job getJob() { return job; }
 
     public HandlerList getHandlers() {
         return handlers;
@@ -46,4 +43,5 @@ public class JobBurnEvent extends Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
+
 }

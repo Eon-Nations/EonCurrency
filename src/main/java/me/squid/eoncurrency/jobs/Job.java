@@ -29,13 +29,8 @@ public class Job {
         return exp;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void addLevel() {
-        // TODO Figure this out
-        System.out.println("Add level");
+    public long getLevel() {
+        return Math.round(0.5 * Math.sqrt(exp));
     }
 
 }

@@ -28,8 +28,10 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
+        System.out.println("Quit Event called");
         Player p = e.getPlayer();
         EconomyManager.savePlayerToSQL(e.getPlayer());
         JobsManager.loadPlayerToSQL(e.getPlayer());
+        System.out.println("Saved player: " + e.getPlayer().getName() + " to Job and Currency Database");
     }
 }

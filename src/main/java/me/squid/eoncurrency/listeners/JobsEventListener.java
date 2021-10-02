@@ -2,13 +2,19 @@ package me.squid.eoncurrency.listeners;
 
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.events.*;
+import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
 import me.squid.eoncurrency.managers.EconomyManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class JobsEventListener implements Listener {
 
@@ -24,86 +30,92 @@ public class JobsEventListener implements Listener {
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
         if (e.getWorld().getName().equals("spawn_void")) return;
-        try {
-            double reward = jobFileManager.getPriceForAction("break", e.getJob(), e.getMaterial().name());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("break", e.getJob(), e.getMaterial().name()));
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Don't do anything here
-            // Player doesn't have a job
-        }
+        sendJobReward(e.getPlayer(), "break", e.getJob(), e.getMaterial().name(), 1);
     }
 
     @EventHandler
     public void onJobPlaceEvent(JobPlaceEvent e) {
-        try {
-            double reward = jobFileManager.getPriceForAction("place", e.getJob(), e.getMaterial().name());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("place", e.getJob(), e.getMaterial().name()));
-            e.getPlayer().sendMessage(e.getMaterial().name());
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Player doesn't have a job
-            // Don't do anything
-        }
+        sendJobReward(e.getPlayer(), "place", e.getJob(), e.getMaterial().name(), 1);
     }
 
     @EventHandler
     public void onJobFishEvent(JobFishEvent e) {
-        try {
-            double reward = jobFileManager.getPriceForAction("fish", e.getJob(), e.getFishName());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("fish", e.getJob(), e.getFishName()));
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Player doesn't have a job
-            // Don't do anything
-        }
+        sendJobReward(e.getPlayer(), "fish", e.getJob(), e.getFishName(), 1);
     }
 
     @EventHandler
     public void onShearSheepEvent(JobShearEvent e) {
-        try {
-            double reward = jobFileManager.getPriceForAction("shear", e.getJob(), e.getSheep().getName());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("shear", e.getJob(), e.getSheep().getName()));
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Player doesn't have a job
-            // It's alright
-        }
+        sendJobReward(e.getPlayer(), "shear", e.getJob(), e.getSheep().getName(), 1);
     }
 
     @EventHandler
     public void onEnchantItem(JobEnchantEvent e) {
-        try {
-            double reward = jobFileManager.getPriceForAction("enchant", e.getJob(), e.getEnchantItem().getType().name());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("enchant", e.getJob(), e.getEnchantItem().getType().name()));
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Player doesn't have a job
-        }
+        sendJobReward(e.getPlayer(), "enchant", e.getJob(), e.getEnchantItem().getType().name(), 1);
     }
 
     @EventHandler
-    public void onFurnaceBurnEvent(JobBurnEvent e) {
-        try {
-            double reward = e.getAmount() *
-                    jobFileManager.getPriceForAction("smelt", e.getJob(), e.getMaterial().name());
-            e.getJob().addExp(jobFileManager.getExperienceForAction("smelt", e.getJob(), e.getMaterial().name()));
-            EconomyManager.addBalance(e.getPlayer().getUniqueId(), reward);
-            Bukkit.getScheduler().runTask(plugin, message(e.getPlayer(), reward));
-        } catch (NullPointerException exception) {
-            // Player doesn't have a job
-        }
+    public void onFurnaceExtractEvent(JobSmeltEvent e) {
+        sendJobReward(e.getPlayer(), "smelt", e.getJob(), e.getMaterial().name(), e.getAmount());
+    }
+
+    @EventHandler
+    public void onEntityKillEvent(JobKillEvent e) {
+        sendJobReward(e.getPlayer(), "kill", e.getJob(), e.getEntityType(), 1);
+    }
+
+    @EventHandler
+    public void onJobBreedEvent(JobBreedEvent e) {
+        sendJobReward(e.getPlayer(), "breed", e.getJob(), e.getBreeded().getType().name(), 1);
+    }
+
+    @EventHandler
+    public void onJobCraftEvent(JobCraftEvent e) {
+        sendJobReward(e.getPlayer(), "craft", e.getJob(), e.getType().name(), e.getAmount());
     }
 
     private Runnable message(Player p, double reward) {
         return () -> {
-            if (reward != 0)
-                p.sendActionBar(Component.text("Added " + reward));
+            if (reward != 0) {
+                p.sendActionBar(Component.text("Jobs: ")
+                        .color(TextColor.color(0, 255, 0))
+                        .append(Component.text("Earned $" + reward)
+                                .color(TextColor.color(160, 160, 160))));
+            }
         };
+    }
+
+    private void sendJobReward(Player p, String action, Job job, String type, int amount) {
+        try {
+            double reward = giveMoneyToPlayer(p, action, job, type.toLowerCase(), amount);
+            giveExperience(job, action, type.toLowerCase());
+            Bukkit.getScheduler().runTask(plugin, message(p, round(reward, 2)));
+        } catch (NullPointerException exception) {
+            // Player doesn't have a job
+        }
+    }
+
+    private double giveMoneyToPlayer(Player p, String action, Job job, String type, int amount) {
+        double baseReward = jobFileManager.getPriceForAction(action, job, type) * amount;
+        double multiplier = getLevel(job.getExp()) * 0.05;
+        EconomyManager.addBalance(p.getUniqueId(), baseReward * multiplier);
+        return baseReward * multiplier;
+    }
+
+    private void giveExperience(Job job, String action, String type) {
+        double baseExp = jobFileManager.getExperienceForAction(action, job, type);
+        double multiplier = getLevel(job.getExp());
+        job.addExp(multiplier * baseExp);
+    }
+
+    private long getLevel(double experience) {
+        long exp = Math.round(0.5 * Math.sqrt(experience));
+        if (exp < 1) return 1;
+        else return exp;
+    }
+
+    private double round(double exp, int places) {
+        BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
+        bd = bd.setScale(places, RoundingMode.HALF_EVEN);
+        return bd.doubleValue();
     }
 }

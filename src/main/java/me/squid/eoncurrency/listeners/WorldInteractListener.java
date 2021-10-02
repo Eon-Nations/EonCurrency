@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -117,21 +119,65 @@ public class WorldInteractListener implements Listener {
         Job job = JobsManager.getPlayerJob(p.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                Bukkit.getPluginManager().callEvent(new JobBurnEvent(p, material, amount, job)));
+                Bukkit.getPluginManager().callEvent(new JobSmeltEvent(p, material, amount, job)));
+    }
+
+    @EventHandler
+    public void onEntityKill(EntityDeathEvent e) {
+        if (e.getEntity().getKiller() != null) {
+            Player p = e.getEntity().getKiller();
+            String name = e.getEntityType().name();
+            Job job = JobsManager.getPlayerJob(p.getUniqueId());
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    Bukkit.getPluginManager().callEvent(new JobKillEvent(p, job, name)));
+        }
+    }
+
+    @EventHandler
+    public void onEntityBreedEvent(EntityBreedEvent e) {
+        if (e.getBreeder() != null && e.getBreeder() instanceof Player p) {
+            Job job = JobsManager.getPlayerJob(p.getUniqueId());
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    Bukkit.getPluginManager().callEvent(new JobBreedEvent(p, job, e.getMother())));
+        }
     }
 
     @EventHandler
     public void onCraftEvent(InventoryClickEvent e) {
-        if (e.getClickedInventory().getType().equals(InventoryType.WORKBENCH)) {
+        if (e.getClickedInventory() != null && e.getClickedInventory().getType().equals(InventoryType.WORKBENCH)) {
             if (e.getSlot() == 0) {
+                int beforeAmount = 0;
+                Player p = (Player) e.getWhoClicked();
                 ItemStack item = e.getCurrentItem();
-                int amount = item.getAmount();
+                ItemStack[] beforeItems = p.getInventory().getContents();
                 Material type = item.getType();
 
-                e.getWhoClicked().sendMessage(Component.text("Amount: " + amount));
-                e.getWhoClicked().sendMessage(Component.text("Type: " + type.name().toLowerCase()));
+                for (ItemStack beforeItem : beforeItems) {
+                    if (beforeItem != null && beforeItem.getType().equals(type)) {
+                        beforeAmount += beforeItem.getAmount();
+                    }
+                }
+                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runAmountTask(p, type, beforeAmount), 1L);
             }
-            e.getWhoClicked().sendMessage(Component.text("That is indeed a workbench"));
         }
+    }
+
+    private Runnable runAmountTask(Player p, Material type, int beforeAmount) {
+        return () -> {
+            int afterAmount = getAfterAmount(p, type);
+            Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(Component.text("Difference: " + (afterAmount - beforeAmount))));
+            Bukkit.getPluginManager().callEvent(new JobCraftEvent(p, afterAmount - beforeAmount, type));
+        };
+    }
+
+    public int getAfterAmount(Player p, Material type) {
+        int amount = 0;
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item != null && item.getType().equals(type)) {
+                amount += item.getAmount();
+            }
+        }
+        return amount;
     }
 }

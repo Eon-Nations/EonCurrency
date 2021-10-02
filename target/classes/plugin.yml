@@ -30,3 +30,5 @@ commands:
     aliases: [balancetop]
   jobmenu:
     description: Opens the job menu
+  jobstats:
+    description: Get stats about job

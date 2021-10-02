@@ -3,6 +3,8 @@ package me.squid.eoncurrency.utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -67,5 +69,13 @@ public class Utils {
                 inv.setItem(i, item);
             }
         }
+    }
+
+    public static void playHarpSoundAtPlayer(Player p) {
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
+    }
+
+    public static void playBassSoundAtPlayer(Player p) {
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
     }
 }
