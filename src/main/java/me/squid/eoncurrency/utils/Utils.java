@@ -1,6 +1,7 @@
 package me.squid.eoncurrency.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -10,6 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,5 +81,26 @@ public class Utils {
 
     public static void playBassSoundAtPlayer(Player p) {
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+    }
+
+    public static Component getPrefix(String name) {
+        return switch (name) {
+            case "admin" -> Component.text("[").color(TextColor.color(128, 128, 128))
+                    .append(Component.text("Eon Admin").color(TextColor.color(102, 178, 255))
+                            .append(Component.text("] ").append(Component.text(" "))));
+            case "nations" -> Component.text("[").color(TextColor.color(128, 128, 128))
+                    .append(Component.text("Eon Nations").color(TextColor.color(102, 178, 255))
+                            .append(Component.text("] ").append(Component.text(" "))));
+            case "moderation" -> Component.text("[").color(TextColor.color(128, 128, 128))
+                    .append(Component.text("Eon Moderation").color(TextColor.color(102, 178, 255))
+                            .append(Component.text("] ").color(TextColor.color(128, 128, 128))
+                                    .append(Component.text(" "))));
+        };
+    }
+
+    public static double round(double exp, int places) {
+        BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
+        bd = bd.setScale(places, RoundingMode.HALF_EVEN);
+        return bd.doubleValue();
     }
 }
