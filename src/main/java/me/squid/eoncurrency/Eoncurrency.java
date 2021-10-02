@@ -50,7 +50,6 @@ public final class Eoncurrency extends JavaPlugin {
         new ShopMenuListener(this);
         new WorldInteractListener(this);
         new JobsEventListener(this, new JobFileManager(this));
-        new JobStatsMenu(this);
     }
 
     public void registerManagers() {
