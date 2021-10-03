@@ -5,6 +5,7 @@ import me.squid.eoncurrency.events.*;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
 import me.squid.eoncurrency.managers.EconomyManager;
+import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -12,16 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 public class JobsEventListener implements Listener {
 
     Eoncurrency plugin;
     JobFileManager jobFileManager;
+    double multiplierTerm;
 
     public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager) {
+        multiplierTerm = 1.15;
         this.plugin = plugin;
         this.jobFileManager = jobFileManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -88,7 +87,7 @@ public class JobsEventListener implements Listener {
         try {
             double reward = giveMoneyToPlayer(p, action, job, type.toLowerCase(), amount);
             giveExperience(job, action, type.toLowerCase());
-            Bukkit.getScheduler().runTask(plugin, message(p, round(reward, 2)));
+            Bukkit.getScheduler().runTask(plugin, message(p, Utils.round(reward, 2)));
         } catch (NullPointerException exception) {
             // Player doesn't have a job
         }
@@ -96,26 +95,18 @@ public class JobsEventListener implements Listener {
 
     private double giveMoneyToPlayer(Player p, String action, Job job, String type, int amount) {
         double baseReward = jobFileManager.getPriceForAction(action, job, type) * amount;
-        double multiplier = getLevel(job.getExp()) * 0.05;
+        double multiplier = getIntLevel(job.getExp()) * multiplierTerm;
         EconomyManager.addBalance(p.getUniqueId(), baseReward * multiplier);
         return baseReward * multiplier;
     }
 
     private void giveExperience(Job job, String action, String type) {
         double baseExp = jobFileManager.getExperienceForAction(action, job, type);
-        double multiplier = getLevel(job.getExp());
+        double multiplier = getIntLevel(job.getExp()) * multiplierTerm;
         job.addExp(multiplier * baseExp);
     }
 
-    private long getLevel(double experience) {
-        long exp = Math.round(0.5 * Math.sqrt(experience));
-        if (exp < 1) return 1;
-        else return exp;
-    }
-
-    private double round(double exp, int places) {
-        BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
-        bd = bd.setScale(places, RoundingMode.HALF_EVEN);
-        return bd.doubleValue();
+    private long getIntLevel(double experience) {
+        return Math.round(Utils.getDoubleLevel(experience));
     }
 }

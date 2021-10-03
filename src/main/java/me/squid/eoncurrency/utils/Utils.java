@@ -95,6 +95,7 @@ public class Utils {
                     .append(Component.text("Eon Moderation").color(TextColor.color(102, 178, 255))
                             .append(Component.text("] ").color(TextColor.color(128, 128, 128))
                                     .append(Component.text(" "))));
+            default -> Component.text("Invalid");
         };
     }
 
@@ -102,5 +103,11 @@ public class Utils {
         BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
         bd = bd.setScale(places, RoundingMode.HALF_EVEN);
         return bd.doubleValue();
+    }
+
+    public static double getDoubleLevel(double experience) {
+        double exp = 0.5 * Math.sqrt(experience);
+        if (exp < 1) return 1;
+        else return exp;
     }
 }

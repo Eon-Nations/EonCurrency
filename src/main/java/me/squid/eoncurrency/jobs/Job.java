@@ -1,5 +1,7 @@
 package me.squid.eoncurrency.jobs;
 
+import me.squid.eoncurrency.utils.Utils;
+
 public class Job {
     Jobs job;
     int level;
@@ -30,7 +32,7 @@ public class Job {
     }
 
     public long getLevel() {
-        return Math.round(0.5 * Math.sqrt(exp));
+        return Math.round(Utils.getDoubleLevel(exp));
     }
 
 }

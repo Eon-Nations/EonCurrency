@@ -47,4 +47,3 @@ me/squid/eoncurrency/events/JobPlaceEvent.class
 me/squid/eoncurrency/events/JobSmeltEvent.class
 me/squid/eoncurrency/managers/CoinManager.class
 me/squid/eoncurrency/managers/VaultHook.class
-me/squid/eoncurrency/menus/JobStatsMenu.class
