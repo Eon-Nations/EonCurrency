@@ -20,7 +20,7 @@ public class JobsEventListener implements Listener {
     double multiplierTerm;
 
     public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager) {
-        multiplierTerm = 1.15;
+        multiplierTerm = 0.15;
         this.plugin = plugin;
         this.jobFileManager = jobFileManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
