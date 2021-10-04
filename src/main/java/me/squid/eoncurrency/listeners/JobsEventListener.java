@@ -38,6 +38,11 @@ public class JobsEventListener implements Listener {
     }
 
     @EventHandler
+    public void onJobMilkEvent(JobMilkEvent e) {
+        e.getPlayer().sendMessage(Component.text(e.getCow().getName()));
+    }
+
+    @EventHandler
     public void onJobFishEvent(JobFishEvent e) {
         sendJobReward(e.getPlayer(), "fish", e.getJob(), e.getFishName(), 1);
     }
@@ -89,7 +94,10 @@ public class JobsEventListener implements Listener {
             giveExperience(job, action, type.toLowerCase());
             Bukkit.getScheduler().runTask(plugin, message(p, Utils.round(reward, 2)));
         } catch (NullPointerException exception) {
-            // Player doesn't have a job
+            p.sendMessage(Utils.getPrefix("nations")
+                    .append(Component.text("Looks like you haven't joined a job. " +
+                                    "Enter /jobsmenu to join a job")
+                            .color(TextColor.color(160, 160, 160))));
         }
     }
 

@@ -4,15 +4,11 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.events.*;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.managers.JobsManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -52,11 +48,6 @@ public class WorldInteractListener implements Listener {
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent e) {
-        if (e.getPlayer().getWorld().getName().equals("spawn_void") && !e.getPlayer().isOp()) {
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(Component.text("Doesn't work"));
-        }
-
         Material material = e.getBlock().getType();
         Player p = e.getPlayer();
         Job job = JobsManager.getPlayerJob(p.getUniqueId());
@@ -83,9 +74,9 @@ public class WorldInteractListener implements Listener {
     @EventHandler
     public void onCowMilk(PlayerInteractAtEntityEvent e) {
         if (e.getRightClicked() instanceof Cow && e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BUCKET)) {
-            e.getRightClicked().setCustomName("Milked lol");
-            e.getRightClicked().setCustomNameVisible(true);
-            e.getPlayer().sendMessage(Component.text("Milked lol"));
+            Job job = JobsManager.getPlayerJob(e.getPlayer().getUniqueId());
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    Bukkit.getPluginManager().callEvent(new JobMilkEvent(e.getPlayer(), (Cow) e.getRightClicked(), job)));
         }
     }
 
@@ -166,7 +157,6 @@ public class WorldInteractListener implements Listener {
     private Runnable runAmountTask(Player p, Material type, int beforeAmount) {
         return () -> {
             int afterAmount = getAfterAmount(p, type);
-            Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(Component.text("Difference: " + (afterAmount - beforeAmount))));
             Bukkit.getPluginManager().callEvent(new JobCraftEvent(p, afterAmount - beforeAmount, type));
         };
     }

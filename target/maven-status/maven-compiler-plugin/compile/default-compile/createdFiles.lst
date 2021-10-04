@@ -24,6 +24,7 @@ me/squid/eoncurrency/commands/subcommands/coins/CoinGetCommand.class
 me/squid/eoncurrency/jobs/Events.class
 me/squid/eoncurrency/events/JobKillEvent.class
 me/squid/eoncurrency/commands/BaltopCommand.class
+me/squid/eoncurrency/events/JobMilkEvent.class
 me/squid/eoncurrency/listeners/ShopMenuListener.class
 me/squid/eoncurrency/managers/JobsManager.class
 me/squid/eoncurrency/managers/SQLManager.class

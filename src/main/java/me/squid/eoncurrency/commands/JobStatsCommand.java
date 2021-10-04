@@ -25,15 +25,16 @@ public class JobStatsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player p = (Player) commandSender; Job job;
-        try {
-            job = JobsManager.getPlayerJob(p.getUniqueId());
-        } catch (NullPointerException e) {
+        Player p = (Player) commandSender;
+        Job job = JobsManager.getPlayerJob(p.getUniqueId());
+
+        if (job == null) {
             p.sendMessage(Utils.getPrefix("nations")
                     .append(Component.text("Enter /jobsmenu to join a job")
                             .color(TextColor.color(160, 160, 160))));
             return true;
         }
+
         TextColor color = TextColor.color(160, 160, 160);
 
         p.sendMessage(Utils.getPrefix("nations"));

@@ -49,6 +49,7 @@ public class JobsManager {
 
     public static void loadPlayerToSQL(Player p) {
         Job job = playerJobs.get(p.getUniqueId());
+        if (job == null) return;
 
         if (SQLManager.jobPlayerExists(p.getUniqueId())) SQLManager.updatePlayerJob(p.getUniqueId(), job);
         else SQLManager.uploadPlayerJob(p.getUniqueId(), job);

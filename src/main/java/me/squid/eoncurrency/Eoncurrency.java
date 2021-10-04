@@ -9,7 +9,6 @@ import me.squid.eoncurrency.listeners.WorldInteractListener;
 import me.squid.eoncurrency.managers.JobsManager;
 import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.managers.VaultHook;
-import me.squid.eoncurrency.menus.JobChoiceMenu;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Eoncurrency extends JavaPlugin {
@@ -37,9 +36,7 @@ public final class Eoncurrency extends JavaPlugin {
         new ShopCommand(this);
         new BaltopCommand(this);
         new JobStatsCommand(this);
-
-        JobChoiceMenu jobChoiceMenu = new JobChoiceMenu(this);
-        new JobsCommand(this, jobChoiceMenu);
+        new JobsCommand(this);
     }
 
     public void registerListeners() {

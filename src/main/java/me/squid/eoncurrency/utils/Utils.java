@@ -84,17 +84,18 @@ public class Utils {
     }
 
     public static Component getPrefix(String name) {
+        TextColor gray = TextColor.color(128, 128, 128);
+        TextColor color = TextColor.color(102, 178, 255);
         return switch (name) {
-            case "admin" -> Component.text("[").color(TextColor.color(128, 128, 128))
-                    .append(Component.text("Eon Admin").color(TextColor.color(102, 178, 255))
-                            .append(Component.text("] ").append(Component.text(" "))));
-            case "nations" -> Component.text("[").color(TextColor.color(128, 128, 128))
-                    .append(Component.text("Eon Nations").color(TextColor.color(102, 178, 255))
-                            .append(Component.text("] ").append(Component.text(" "))));
-            case "moderation" -> Component.text("[").color(TextColor.color(128, 128, 128))
-                    .append(Component.text("Eon Moderation").color(TextColor.color(102, 178, 255))
-                            .append(Component.text("] ").color(TextColor.color(128, 128, 128))
-                                    .append(Component.text(" "))));
+            case "admin" -> Component.text("[").color(gray)
+                    .append(Component.text("Eon Admin").color(color)
+                            .append(Component.text("] ").color(gray)));
+            case "nations" -> Component.text("[").color(gray)
+                    .append(Component.text("Eon Nations").color(color)
+                            .append(Component.text("] ").color(gray)));
+            case "moderation" -> Component.text("[").color(gray)
+                    .append(Component.text("Eon Moderation").color(color)
+                            .append(Component.text("]").color(gray)));
             default -> Component.text("Invalid");
         };
     }

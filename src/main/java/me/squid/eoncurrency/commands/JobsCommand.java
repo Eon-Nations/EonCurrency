@@ -14,8 +14,8 @@ public class JobsCommand implements CommandExecutor {
     Eoncurrency plugin;
     JobChoiceMenu jobChoiceMenu;
 
-    public JobsCommand(Eoncurrency plugin, JobChoiceMenu menu) {
-        jobChoiceMenu = menu;
+    public JobsCommand(Eoncurrency plugin) {
+        jobChoiceMenu = new JobChoiceMenu(plugin);
         this.plugin = plugin;
         plugin.getCommand("jobmenu").setExecutor(this);
     }
