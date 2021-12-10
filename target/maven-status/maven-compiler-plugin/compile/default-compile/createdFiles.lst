@@ -1,5 +1,6 @@
 me/squid/eoncurrency/menus/EcoMenu.class
 me/squid/eoncurrency/events/JobCraftEvent.class
+me/squid/eoncurrency/menus/JobInfoMenu.class
 me/squid/eoncurrency/jobs/Jobs.class
 me/squid/eoncurrency/commands/subcommands/currency/EcoGiveCommand.class
 me/squid/eoncurrency/commands/PayCommand.class

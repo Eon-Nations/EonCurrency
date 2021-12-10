@@ -3,6 +3,7 @@
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/commands/PayCommand.java
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/currency/EcoGiveCommand.java
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/events/JobMilkEvent.java
+/home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/menus/JobInfoMenu.java
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/commands/subcommands/coins/CoinGetCommand.java
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/commands/CoinCommandManager.java
 /home/uber-driver/Projects/Minecraft_Server/Eoncurrency/src/main/java/me/squid/eoncurrency/events/JobCraftEvent.java

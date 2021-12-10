@@ -94,10 +94,7 @@ public class JobsEventListener implements Listener {
             giveExperience(job, action, type.toLowerCase());
             Bukkit.getScheduler().runTask(plugin, message(p, Utils.round(reward, 2)));
         } catch (NullPointerException exception) {
-            p.sendMessage(Utils.getPrefix("nations")
-                    .append(Component.text("Looks like you haven't joined a job. " +
-                                    "Enter /jobsmenu to join a job")
-                            .color(TextColor.color(160, 160, 160))));
+            // Player doesn't have a job
         }
     }
 
