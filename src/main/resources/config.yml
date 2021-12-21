@@ -19,79 +19,23 @@ shop-prices:
   shulker: 750
 
 # Prices for the jobs
-job-prices:
-  andesite:
-    income: 0.5
-    experience: 0.5
-  stone:
-    income: 0.2
-    experience: 0.2
-  granite:
-    income: 0.5
-    experience: 0.5
-  diorite:
-    income: 0.5
-    experience: 0.5
-  sandstone:
-    income: 0.05
-    experience: 0.1
-  chiseled_sandstone:
-    income: 0.05
-    experience: 0.1
-  cut_sandstone:
-    income: 0.05
-    experience: 0.1
-  coal_ore:
-    income: 1
-    experience: 0.6
-  deepslate_coal_ore:
-    income: 1
-    experience: 0.6
-  redstone_ore:
-    income: 1.5
-    experience: 0.6
-  deepslate_redstone_ore:
-    income: 1.5
-    experience: 0.6
-  copper_ore:
-    income: 1.2
-    experience: 0.4
-  deepslate_copper_ore:
-    income: 1.5
-    experience: 0.5
-  iron_ore:
-    income: 1.5
-    experience: 0.6
-  deepslate_iron_ore:
-    income: 1.5
-    experience: 0.75
-  gold_ore:
-    income: 2.5
-    experience: 1
-  deepslate_gold_ore:
-    income: 2.5
-    experience: 1
-  lapis_ore:
-    income: 7.5
-    experience: 2
-  deepslate_lapis_ore:
-    income: 7.5
-    experience: 2
-  deepslate_diamond_ore:
-    income: 25
-    experience: 25
-  diamond_ore:
-    income: 25
-    experience: 25
-  deepslate_emerald_ore:
-    income: 25
-    experience: 25
-  emerald_ore:
-    income: 25
-    experience: 25
-  nether_quartz_ore:
-    income: 1.0
-    experience: 1.0
-  obsidian:
-    income: 4
-    experience: 4
+actions:
+  - kill
+  - smelt
+  - craft
+  - break
+  - place
+  - breed
+  - shear
+  - milk
+  - fish
+
+action-material-mapping:
+  kill: "diamond_sword"
+  smelt: "furnace"
+  craft: "crafting_table"
+  break: "diamond_pickaxe"
+  place: "diamond_axe"
+  breed: "wheat"
+  shear: "shears"
+  milk: "milk_bucket"

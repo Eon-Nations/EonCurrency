@@ -1,6 +1,8 @@
 package me.squid.eoncurrency.jobs;
 
 import me.squid.eoncurrency.Eoncurrency;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,6 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class JobFileManager {
 
@@ -50,17 +56,25 @@ public class JobFileManager {
     }
 
     public double getPriceForAction(String action, Job job, String material) {
-        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".income");
     }
 
     public double getExperienceForAction(String action, Job job, String material) {
-        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".experience");
     }
 
+    public Map<String, ?> getPricesFromAction(String action, Job job) {
+        FileConfiguration config = getConfigForJob(job);
+        if (config.contains(action)) {
+            ConfigurationSection section = config.getConfigurationSection(action);
+            return section.getValues(false);
+        } else return null;
+    }
+
+    private FileConfiguration getConfigForJob(Job job) {
+        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
+        return YamlConfiguration.loadConfiguration(file);
+    }
 }
