@@ -56,16 +56,16 @@ public class JobFileManager {
     }
 
     public double getPriceForAction(String action, Job job, String material) {
-        FileConfiguration config = getConfigForJob(job);
+        FileConfiguration config = getConfigForJob(job.getEnumJob());
         return config.getDouble(action + "." + material.toLowerCase() + ".income");
     }
 
     public double getExperienceForAction(String action, Job job, String material) {
-        FileConfiguration config = getConfigForJob(job);
+        FileConfiguration config = getConfigForJob(job.getEnumJob());
         return config.getDouble(action + "." + material.toLowerCase() + ".experience");
     }
 
-    public Map<String, ?> getPricesFromAction(String action, Job job) {
+    public Map<String, ?> getPricesFromAction(String action, Jobs job) {
         FileConfiguration config = getConfigForJob(job);
         if (config.contains(action)) {
             ConfigurationSection section = config.getConfigurationSection(action);
@@ -73,8 +73,8 @@ public class JobFileManager {
         } else return null;
     }
 
-    private FileConfiguration getConfigForJob(Job job) {
-        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
+    private FileConfiguration getConfigForJob(Jobs job) {
+        File file = new File(basePath + File.separator + job.name().toLowerCase() + ".yml");
         return YamlConfiguration.loadConfiguration(file);
     }
 }

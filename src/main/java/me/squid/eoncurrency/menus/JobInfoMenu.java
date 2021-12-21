@@ -3,6 +3,7 @@ package me.squid.eoncurrency.menus;
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
+import me.squid.eoncurrency.jobs.Jobs;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -42,18 +43,25 @@ public class JobInfoMenu implements Listener {
         }
     }
 
-    private Inventory getInventory(Player p, Job job) {
+    public Inventory getInventory(Player p, Object job) {
         Inventory inv = Bukkit.createInventory(null, 54, getTitle(p));
+        Job blankJob = null;
+        if (job instanceof Jobs) {
+            blankJob = new Job((Jobs) job);
+        } else if (job instanceof Job) {
+            blankJob = (Job) job;
+        }
+        assert blankJob != null;
 
         for (String action : actions) {
-            Map<String, ?> materialMap = jobFileManager.getPricesFromAction(action, job);
+            Map<String, ?> materialMap = jobFileManager.getPricesFromAction(action, blankJob.getEnumJob());
             ItemStack item = new ItemStack(actionToMaterialMap.get(action), 1);
             ItemMeta meta = item.getItemMeta();
             List<Component> lore = new ArrayList<>();
 
             for (String matString : materialMap.keySet()) {
                 double price = (double) materialMap.get(matString);
-                lore.add(Component.text(matString + ": $" + (price * job.getExp())));
+                lore.add(Component.text(matString + ": $" + (price * blankJob.getExp())));
             }
             meta.lore(lore);
             meta.displayName(Component.text(action).color(TextColor.color(0, 255, 0)));

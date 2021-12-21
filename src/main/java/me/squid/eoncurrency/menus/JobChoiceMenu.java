@@ -23,10 +23,12 @@ import java.util.List;
 public class JobChoiceMenu implements Listener {
 
     Eoncurrency plugin;
+    JobInfoMenu jobInfoMenu;
     Inventory inv;
 
-    public JobChoiceMenu(Eoncurrency plugin) {
+    public JobChoiceMenu(Eoncurrency plugin, JobInfoMenu jobInfoMenu) {
         this.plugin = plugin;
+        this.jobInfoMenu = jobInfoMenu;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         inv = getInventory();
     }
@@ -35,32 +37,28 @@ public class JobChoiceMenu implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
         if (e.getInventory().equals(inv)) {
-            if (e.getClick().isRightClick()) {
-                Jobs enumJob;
+            Jobs enumJob;
+            switch (e.getCurrentItem().getType()) {
+                case WOODEN_AXE -> enumJob = Jobs.WOODCUTTER;
+                case FISHING_ROD -> enumJob = Jobs.FISHERMAN;
+                case ANVIL -> enumJob = Jobs.BLACKSMITH;
+                case BOW -> enumJob = Jobs.HUNTER;
+                case WOODEN_SHOVEL -> enumJob = Jobs.DIGGER;
+                case DIAMOND_PICKAXE -> enumJob = Jobs.MINER;
+                case GOLDEN_HOE -> enumJob = Jobs.FARMER;
+                default -> enumJob = null;
+            }
 
-                switch (e.getCurrentItem().getType()) {
-                    case WOODEN_AXE -> enumJob = Jobs.WOODCUTTER;
-                    case FISHING_ROD -> enumJob = Jobs.FISHERMAN;
-                    case ANVIL -> enumJob = Jobs.BLACKSMITH;
-                    case BOW -> enumJob = Jobs.HUNTER;
-                    case WOODEN_SHOVEL -> enumJob = Jobs.DIGGER;
-                    case DIAMOND_PICKAXE -> enumJob = Jobs.MINER;
-                    case GOLDEN_HOE -> enumJob = Jobs.FARMER;
-                    default -> enumJob = null;
-                }
-
-                if (enumJob != null) {
-                    Job job = new Job(enumJob, 0, 0.0, SQLManager.getEventsFromJob(enumJob));
-                    JobsManager.addPlayerToJob(p.getUniqueId(), job);
-                    p.closeInventory();
-                    p.sendMessage(Component.text("Joined job: " + enumJob.name().toLowerCase()));
-                }
-
-            } else if (e.getClick().isLeftClick()){
-                // switch (e.getCurrentItem().getType()) {
-                //     // TODO Fill this in with info inventories
-                // }
-                p.sendMessage(Component.text("Almost there"));
+            if (e.getClick().isRightClick() && enumJob != null) {
+                Job job = new Job(enumJob, 0, 1.0, SQLManager.getEventsFromJob(enumJob));
+                JobsManager.addPlayerToJob(p.getUniqueId(), job);
+                p.closeInventory();
+                p.sendMessage(Component.text("Joined job: " + enumJob.name().toLowerCase()));
+            } else if (e.getClick().isLeftClick() && enumJob != null) {
+                Job currentJob = JobsManager.getPlayerJob(p.getUniqueId());
+                if (currentJob != null && currentJob.getEnumJob().equals(enumJob)) {
+                    p.openInventory(jobInfoMenu.getInventory(p, currentJob));
+                } else p.openInventory(jobInfoMenu.getInventory(p, enumJob));
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
             e.setCancelled(true);

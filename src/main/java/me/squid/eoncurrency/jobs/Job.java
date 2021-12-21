@@ -1,5 +1,6 @@
 package me.squid.eoncurrency.jobs;
 
+import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.utils.Utils;
 
 public class Job {
@@ -13,6 +14,13 @@ public class Job {
         this.level = level;
         this.exp = exp;
         this.eventsToListen = eventsToListen;
+    }
+
+    public Job(Jobs job) {
+        this.job = job;
+        this.level = 0;
+        this.exp = 1.0;
+        this.eventsToListen = SQLManager.getEventsFromJob(job);
     }
 
     public Jobs getEnumJob() {
