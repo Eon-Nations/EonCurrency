@@ -176,16 +176,16 @@ public class ShopMenuListener implements Listener {
 
     public double getPrice(Material material) {
         return switch (material) {
-            case HOPPER -> plugin.getConfig().getInt("hopper");
-            case END_CRYSTAL -> plugin.getConfig().getInt("end_crystal");
-            case STONE -> plugin.getConfig().getInt("stone");
-            case GRAVEL -> plugin.getConfig().getInt("gravel");
-            case DIRT -> plugin.getConfig().getInt("dirt");
-            case COBBLESTONE -> plugin.getConfig().getInt("cobblestone");
-            case SAND -> plugin.getConfig().getInt("sand");
-            case PHANTOM_MEMBRANE -> plugin.getConfig().getInt("phantom");
-            case ITEM_FRAME -> plugin.getConfig().getInt("item_frame");
-            case SHULKER_SHELL -> plugin.getConfig().getInt("shulker");
+            case HOPPER -> plugin.getConfig().getInt("shop-prices.hopper");
+            case END_CRYSTAL -> plugin.getConfig().getInt("shop-prices.end_crystal");
+            case STONE -> plugin.getConfig().getInt("shop-prices.stone");
+            case GRAVEL -> plugin.getConfig().getInt("shop-prices.gravel");
+            case DIRT -> plugin.getConfig().getInt("shop-prices.dirt");
+            case COBBLESTONE -> plugin.getConfig().getInt("shop-prices.cobblestone");
+            case SAND -> plugin.getConfig().getInt("shop-prices.sand");
+            case PHANTOM_MEMBRANE -> plugin.getConfig().getInt("shop-prices.phantom");
+            case ITEM_FRAME -> plugin.getConfig().getInt("shop-prices.item_frame");
+            case SHULKER_SHELL -> plugin.getConfig().getInt("shop-prices.shulker");
             default -> 1;
         };
     }

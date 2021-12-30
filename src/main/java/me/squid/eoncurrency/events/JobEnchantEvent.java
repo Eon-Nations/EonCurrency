@@ -17,12 +17,14 @@ public class JobEnchantEvent extends Event {
     Map<Enchantment, Integer> enchantments;
     Job job;
     ItemStack item;
+    int level;
 
-    public JobEnchantEvent(Player p, Map<Enchantment, Integer> enchantments, Job job, ItemStack item) {
+    public JobEnchantEvent(Player p, Map<Enchantment, Integer> enchantments, Job job, ItemStack item, int level) {
         this.p = p;
         this.enchantments = enchantments;
         this.job = job;
         this.item = item;
+        this.level = level;
     }
 
     public Player getPlayer() {
@@ -39,6 +41,10 @@ public class JobEnchantEvent extends Event {
 
     public Job getJob() {
         return job;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public HandlerList getHandlers() {

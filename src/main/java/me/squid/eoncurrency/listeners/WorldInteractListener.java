@@ -99,7 +99,7 @@ public class WorldInteractListener implements Listener {
         Job job = JobsManager.getPlayerJob(p.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                Bukkit.getPluginManager().callEvent(new JobEnchantEvent(p, enchantMap, job, itemToEnchant)));
+                Bukkit.getPluginManager().callEvent(new JobEnchantEvent(p, enchantMap, job, itemToEnchant, e.getExpLevelCost())));
     }
 
     @EventHandler

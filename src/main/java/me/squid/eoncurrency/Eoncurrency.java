@@ -9,6 +9,7 @@ import me.squid.eoncurrency.listeners.WorldInteractListener;
 import me.squid.eoncurrency.managers.JobsManager;
 import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.managers.VaultHook;
+import me.squid.eoncurrency.menus.JobInfoMenu;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Eoncurrency extends JavaPlugin {
@@ -18,6 +19,7 @@ public final class Eoncurrency extends JavaPlugin {
         saveDefaultConfig();
         registerCommands();
         registerListeners();
+        registerJobs();
         registerManagers();
         hookVault();
     }
@@ -35,15 +37,21 @@ public final class Eoncurrency extends JavaPlugin {
         new BalanceCommand(this);
         new ShopCommand(this);
         new BaltopCommand(this);
-        new JobStatsCommand(this);
-        new JobsCommand(this);
     }
 
     public void registerListeners() {
         new JoinListener(this);
         new ShopMenuListener(this);
         new WorldInteractListener(this);
-        new JobsEventListener(this, new JobFileManager(this));
+    }
+
+    public void registerJobs() {
+        new JobStatsCommand(this);
+        JobFileManager jobFileManager = new JobFileManager(this);
+        JobInfoMenu jobInfoMenu = new JobInfoMenu(this, jobFileManager);
+        new JobsCommand(this, jobInfoMenu);
+        new JobsEventListener(this, jobFileManager);
+        new JobsCommand(this, jobInfoMenu);
     }
 
     public void registerManagers() {

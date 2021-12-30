@@ -1,6 +1,8 @@
 package me.squid.eoncurrency.jobs;
 
 import me.squid.eoncurrency.Eoncurrency;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,6 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class JobFileManager {
 
@@ -49,18 +55,30 @@ public class JobFileManager {
         }
     }
 
-    public double getPriceForAction(String action, Job job, String material) {
-        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+    public double getPriceForAction(String action, Jobs job, String material) {
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".income");
     }
 
-    public double getExperienceForAction(String action, Job job, String material) {
-        File file = new File(basePath + File.separator + job.getEnumJob().name().toLowerCase() + ".yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
+    public double getExperienceForAction(String action, Jobs job, String material) {
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".experience");
     }
 
+    public Map<String, Double> getPricesFromAction(String action, Jobs job) {
+        HashMap<String, Double> hashMap = new HashMap<>();
+        FileConfiguration config = getConfigForJob(job);
+        List<String> listString = config.getStringList(action);
+        for (String value : listString) {
+            double price = getPriceForAction(action, job, value);
+            hashMap.put(value, price);
+        }
+
+        return hashMap;
+    }
+
+    private FileConfiguration getConfigForJob(Jobs job) {
+        File file = new File(basePath + File.separator + job.name().toLowerCase() + ".yml");
+        return YamlConfiguration.loadConfiguration(file);
+    }
 }
