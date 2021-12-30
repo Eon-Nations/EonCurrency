@@ -55,22 +55,26 @@ public class JobFileManager {
         }
     }
 
-    public double getPriceForAction(String action, Job job, String material) {
-        FileConfiguration config = getConfigForJob(job.getEnumJob());
+    public double getPriceForAction(String action, Jobs job, String material) {
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".income");
     }
 
-    public double getExperienceForAction(String action, Job job, String material) {
-        FileConfiguration config = getConfigForJob(job.getEnumJob());
+    public double getExperienceForAction(String action, Jobs job, String material) {
+        FileConfiguration config = getConfigForJob(job);
         return config.getDouble(action + "." + material.toLowerCase() + ".experience");
     }
 
-    public Map<String, ?> getPricesFromAction(String action, Jobs job) {
+    public Map<String, Double> getPricesFromAction(String action, Jobs job) {
+        HashMap<String, Double> hashMap = new HashMap<>();
         FileConfiguration config = getConfigForJob(job);
-        if (config.contains(action)) {
-            ConfigurationSection section = config.getConfigurationSection(action);
-            return section.getValues(false);
-        } else return null;
+        List<String> listString = config.getStringList(action);
+        for (String value : listString) {
+            double price = getPriceForAction(action, job, value);
+            hashMap.put(value, price);
+        }
+
+        return hashMap;
     }
 
     private FileConfiguration getConfigForJob(Jobs job) {

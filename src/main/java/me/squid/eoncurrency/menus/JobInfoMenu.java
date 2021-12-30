@@ -54,13 +54,13 @@ public class JobInfoMenu implements Listener {
         assert blankJob != null;
 
         for (String action : actions) {
-            Map<String, ?> materialMap = jobFileManager.getPricesFromAction(action, blankJob.getEnumJob());
+            Map<String, Double> materialMap = jobFileManager.getPricesFromAction(action, blankJob.getEnumJob());
             ItemStack item = new ItemStack(actionToMaterialMap.get(action), 1);
             ItemMeta meta = item.getItemMeta();
             List<Component> lore = new ArrayList<>();
 
             for (String matString : materialMap.keySet()) {
-                double price = (double) materialMap.get(matString);
+                double price = materialMap.get(matString);
                 lore.add(Component.text(matString + ": $" + (price * blankJob.getExp())));
             }
             meta.lore(lore);
@@ -78,7 +78,7 @@ public class JobInfoMenu implements Listener {
 
         for (String action : map.keySet()) {
             String matString = (String) map.get(action);
-            Material material = Material.valueOf(matString);
+            Material material = Material.valueOf(matString.toUpperCase(Locale.ENGLISH));
             retVal.put(action, material);
         }
         return retVal;

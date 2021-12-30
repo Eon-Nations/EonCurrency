@@ -21,19 +21,19 @@ public class PayCommand implements CommandExecutor {
 
     public PayCommand(Eoncurrency plugin) {
         this.plugin = plugin;
-        Objects.requireNonNull(plugin.getCommand("pay")).setExecutor(this);
+        plugin.getCommand("pay").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[0]);
                 double amount = Double.parseDouble(args[1]);
+                amount = Double.parseDouble(eco.format(amount));
 
-                if (target != null && eco.has(p, amount)) {
+                if (target != null && eco.has(p, amount) && amount > 0) {
                     eco.withdrawPlayer(p, amount);
                     eco.depositPlayer(target, amount);
                     target.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &b" + p.getName() + " has sent you $" + amount));

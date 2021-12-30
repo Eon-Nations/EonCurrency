@@ -2,8 +2,6 @@ package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.managers.EconomyManager;
-import me.squid.eoncurrency.managers.VaultEconManager;
-import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -18,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
@@ -48,7 +45,7 @@ public class BaltopCommand implements CommandExecutor {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&b&lTop Balances"));
         int count = 1;
 
-        for (UUID uuid : EconomyManager.getSortedMap().keySet()) {
+        for (UUID uuid : EconomyManager.getOnlineSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
             DecimalFormat df = new DecimalFormat("#.##");
             Double money = EconomyManager.getBalance(p.getUniqueId());
@@ -68,7 +65,7 @@ public class BaltopCommand implements CommandExecutor {
             item.setItemMeta(meta);
 
             inv.addItem(item);
-            count++;
+            ++count;
         }
 
         return inv;

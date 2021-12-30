@@ -18,7 +18,7 @@ public class Job {
 
     public Job(Jobs job) {
         this.job = job;
-        this.level = 0;
+        this.level = 1;
         this.exp = 1.0;
         this.eventsToListen = SQLManager.getEventsFromJob(job);
     }

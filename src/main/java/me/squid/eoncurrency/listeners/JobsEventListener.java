@@ -17,10 +17,8 @@ public class JobsEventListener implements Listener {
 
     Eoncurrency plugin;
     JobFileManager jobFileManager;
-    double multiplierTerm;
 
     public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager) {
-        multiplierTerm = 0.15;
         this.plugin = plugin;
         this.jobFileManager = jobFileManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -54,7 +52,11 @@ public class JobsEventListener implements Listener {
 
     @EventHandler
     public void onEnchantItem(JobEnchantEvent e) {
-        sendJobReward(e.getPlayer(), "enchant", e.getJob(), e.getEnchantItem().getType().name(), 1);
+        double amount = 1;
+        if (e.getLevel() != 30) {
+            amount = e.getLevel() * 0.01;
+        }
+        sendJobReward(e.getPlayer(), "enchant", e.getJob(), e.getEnchantItem().getType().name(), amount);
     }
 
     @EventHandler
@@ -88,7 +90,7 @@ public class JobsEventListener implements Listener {
         };
     }
 
-    private void sendJobReward(Player p, String action, Job job, String type, int amount) {
+    private void sendJobReward(Player p, String action, Job job, String type, double amount) {
         try {
             double reward = giveMoneyToPlayer(p, action, job, type.toLowerCase(), amount);
             giveExperience(job, action, type.toLowerCase());
@@ -98,20 +100,22 @@ public class JobsEventListener implements Listener {
         }
     }
 
-    private double giveMoneyToPlayer(Player p, String action, Job job, String type, int amount) {
-        double baseReward = jobFileManager.getPriceForAction(action, job, type) * amount;
-        double multiplier = getIntLevel(job.getExp()) * multiplierTerm;
-        EconomyManager.addBalance(p.getUniqueId(), baseReward * multiplier);
-        return baseReward * multiplier;
+    private double giveMoneyToPlayer(Player p, String action, Job job, String type, double amount) {
+        double baseReward = jobFileManager.getPriceForAction(action, job.getEnumJob(), type) * amount;
+        EconomyManager.addBalance(p.getUniqueId(), baseReward * getMultiplier(job.getExp()));
+        return baseReward * getMultiplier(job.getExp());
     }
 
     private void giveExperience(Job job, String action, String type) {
-        double baseExp = jobFileManager.getExperienceForAction(action, job, type);
-        double multiplier = getIntLevel(job.getExp()) * multiplierTerm;
-        job.addExp(multiplier * baseExp);
+        double baseExp = jobFileManager.getExperienceForAction(action, job.getEnumJob(), type);
+        job.addExp(baseExp * getMultiplier(job.getExp()));
     }
 
     private long getIntLevel(double experience) {
         return Math.round(Utils.getDoubleLevel(experience));
+    }
+
+    private double getMultiplier(double exp) {
+        return (getIntLevel(exp) * 0.01) + 1;
     }
 }

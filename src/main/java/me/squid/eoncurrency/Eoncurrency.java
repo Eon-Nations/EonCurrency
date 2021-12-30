@@ -49,7 +49,7 @@ public final class Eoncurrency extends JavaPlugin {
         new JobStatsCommand(this);
         JobFileManager jobFileManager = new JobFileManager(this);
         JobInfoMenu jobInfoMenu = new JobInfoMenu(this, jobFileManager);
-        new JobsCommand(this, new JobInfoMenu(this, jobFileManager));
+        new JobsCommand(this, jobInfoMenu);
         new JobsEventListener(this, jobFileManager);
         new JobsCommand(this, jobInfoMenu);
     }

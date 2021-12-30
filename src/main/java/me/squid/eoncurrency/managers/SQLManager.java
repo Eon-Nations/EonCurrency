@@ -4,12 +4,14 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.jobs.Events;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.Jobs;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
-import java.util.UUID;
+import java.util.*;
 
 public class SQLManager {
 
@@ -90,6 +92,25 @@ public class SQLManager {
             reconnectToDatabase(e);
         }
         return false;
+    }
+
+    public static Set<UUID> getAllCurrencyPlayers() {
+        Set<UUID> returnSet = new TreeSet<>();
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM currency");
+            for (ResultSet results = ps.executeQuery(); results.next(); ) {
+                UUID uuid = UUID.fromString(results.getString("UUID"));
+                returnSet.add(uuid);
+            }
+        } catch (SQLException e) {
+            reconnectToDatabase(e);
+        }
+
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            returnSet.add(online.getUniqueId());
+        }
+
+        return returnSet;
     }
 
     public static void uploadPlayerJob(UUID uuid, Job job) {

@@ -29,8 +29,8 @@ public class JobChoiceMenu implements Listener {
     public JobChoiceMenu(Eoncurrency plugin, JobInfoMenu jobInfoMenu) {
         this.plugin = plugin;
         this.jobInfoMenu = jobInfoMenu;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
         inv = getInventory();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
@@ -50,15 +50,19 @@ public class JobChoiceMenu implements Listener {
             }
 
             if (e.getClick().isRightClick() && enumJob != null) {
-                Job job = new Job(enumJob, 0, 1.0, SQLManager.getEventsFromJob(enumJob));
+                Job job = new Job(enumJob, 1, 1.0, SQLManager.getEventsFromJob(enumJob));
                 JobsManager.addPlayerToJob(p.getUniqueId(), job);
                 p.closeInventory();
                 p.sendMessage(Component.text("Joined job: " + enumJob.name().toLowerCase()));
             } else if (e.getClick().isLeftClick() && enumJob != null) {
+                // Paused on implementation of the InfoMenu
+                /*
                 Job currentJob = JobsManager.getPlayerJob(p.getUniqueId());
                 if (currentJob != null && currentJob.getEnumJob().equals(enumJob)) {
                     p.openInventory(jobInfoMenu.getInventory(p, currentJob));
                 } else p.openInventory(jobInfoMenu.getInventory(p, enumJob));
+                */
+                p.sendMessage(Component.text("Information Menu Coming Soon! For more information about what each job does, feel free to ask!"));
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
             e.setCancelled(true);

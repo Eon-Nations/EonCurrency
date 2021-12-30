@@ -1,6 +1,7 @@
 package me.squid.eoncurrency.managers;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -44,7 +45,7 @@ public class EconomyManager {
         return !(currency.get(uuid) < amount);
     }
 
-    public static HashMap<UUID, Double> getSortedMap() {
+    public static @NotNull HashMap<UUID, Double> getOnlineSortedMap() {
         LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
 
         currency.entrySet()
