@@ -8,6 +8,7 @@ import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,19 +18,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JobChoiceMenu implements Listener {
 
     Eoncurrency plugin;
     JobInfoMenu jobInfoMenu;
-    Inventory inv;
+    Inventory inv, confirmationInv;
+    public HashMap<UUID, Job> confirmationMap;
 
     public JobChoiceMenu(Eoncurrency plugin, JobInfoMenu jobInfoMenu) {
         this.plugin = plugin;
         this.jobInfoMenu = jobInfoMenu;
         inv = getInventory();
+        confirmationInv = getConfirmationInventory();
+        confirmationMap = new HashMap<>();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -50,10 +53,12 @@ public class JobChoiceMenu implements Listener {
             }
 
             if (e.getClick().isRightClick() && enumJob != null) {
-                Job job = new Job(enumJob, 1, 1.0, SQLManager.getEventsFromJob(enumJob));
-                JobsManager.addPlayerToJob(p.getUniqueId(), job);
-                p.closeInventory();
-                p.sendMessage(Component.text("Joined job: " + enumJob.name().toLowerCase()));
+                if (!confirmationMap.containsKey(p.getUniqueId())) {
+                    Job job = new Job(enumJob, 0, 0.0, SQLManager.getEventsFromJob(enumJob));
+                    confirmationMap.put(p.getUniqueId(), job);
+                    p.closeInventory();
+                    p.openInventory(confirmationInv);
+                }
             } else if (e.getClick().isLeftClick() && enumJob != null) {
                 // Paused on implementation of the InfoMenu
                 /*
@@ -64,13 +69,45 @@ public class JobChoiceMenu implements Listener {
                 */
                 p.sendMessage(Component.text("Information Menu Coming Soon! For more information about what each job does, feel free to ask!"));
             }
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
+            Utils.playHarpSoundAtPlayer(p);
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onConfirmationInventoryClick(InventoryClickEvent e) {
+        Player p = (Player) e.getWhoClicked();
+        if (e.getInventory().equals(confirmationInv)) {
+            switch (e.getCurrentItem().getType()) {
+                case EMERALD_BLOCK -> {
+                    Job jobToAdd = confirmationMap.remove(p.getUniqueId());
+                    p.closeInventory();
+                    JobsManager.addPlayerToJob(p.getUniqueId(), jobToAdd);
+                    p.sendMessage(Component.text("Joined job: " + StringUtils.capitalize(jobToAdd.getEnumJob().name().toLowerCase())));
+                }
+                case REDSTONE_BLOCK -> {
+                    p.closeInventory();
+                    confirmationMap.remove(p.getUniqueId());
+                }
+            }
+            Utils.playHarpSoundAtPlayer(p);
             e.setCancelled(true);
         }
     }
 
     public Inventory getInv() {
         return inv;
+    }
+
+    private Inventory getConfirmationInventory() {
+        Inventory inventory = Bukkit.createInventory(null, 27,
+                Component.text("Jobs Confirmation").color(TextColor.color(0, 255, 0)));
+        List<Component> warningLore = List.of(
+                Component.text("Joining a new job will RESET your progress. " +
+                        "Do not continue if you wish to keep your progress.").color(TextColor.color(255, 0, 0)));
+        Utils.createItem(inventory, Material.EMERALD_BLOCK, 1, 12, Component.text("Confirm").color(TextColor.color(0, 255, 0)), warningLore);
+        Utils.createItem(inventory, Material.REDSTONE_BLOCK, 1, 16, Component.text("Go Back").color(TextColor.color(255, 128, 0)));
+        return inventory;
     }
 
     private Inventory getInventory() {

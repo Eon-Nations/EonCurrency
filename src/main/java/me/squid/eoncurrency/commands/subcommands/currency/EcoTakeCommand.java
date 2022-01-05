@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.commands.subcommands.currency;
 
 import me.squid.eoncurrency.commands.SubCommand;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.managers.VaultEconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;

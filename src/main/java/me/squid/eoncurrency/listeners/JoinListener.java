@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.listeners;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.managers.JobsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

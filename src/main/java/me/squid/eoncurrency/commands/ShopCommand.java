@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.menus.EcoMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

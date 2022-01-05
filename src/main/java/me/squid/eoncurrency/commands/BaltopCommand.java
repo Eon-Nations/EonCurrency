@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

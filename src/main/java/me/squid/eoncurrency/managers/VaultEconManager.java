@@ -1,15 +1,39 @@
 package me.squid.eoncurrency.managers;
 
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.MetaNode;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class VaultEconManager implements Economy {
+
+    HashMap<UUID, Double> currency;
+    LuckPerms luckPerms;
+
+    public VaultEconManager() {
+        currency = new HashMap<>();
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider != null) {
+            luckPerms = provider.getProvider();
+        }
+    }
+
+    public void setBalance(OfflinePlayer player, double balance) {
+        if (player != null) {
+            currency.put(player.getUniqueId(), balance);
+            currency.get(player.getUniqueId());
+        }
+    }
 
     @Override
     public boolean isEnabled() {
@@ -49,14 +73,27 @@ public class VaultEconManager implements Economy {
 
     @Override
     public boolean hasAccount(String playerName) {
-        Player p = Bukkit.getPlayer(playerName);
-        assert p != null;
-        return EconomyManager.exists(p.getUniqueId());
+        OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(playerName);
+        if (player != null) {
+            return hasAccount(player);
+        } else return false;
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer p) {
-        return EconomyManager.exists(p.getUniqueId());
+        if (p.isOnline()) {
+            return currency.containsKey(p.getUniqueId());
+        } else {
+            // This is a blocking method. However, by most plugins, this will not be called unless it is on an async thread.
+            // So it should be fine to exist here.
+            CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
+                Optional<MetaNode> optionalNode = user.getNodes(NodeType.META).stream()
+                        .filter(node -> node.getMetaKey().contains("currency"))
+                        .findFirst();
+                return optionalNode.isPresent();
+            });
+            return boolFuture.join();
+        }
     }
 
     @Override
@@ -71,14 +108,13 @@ public class VaultEconManager implements Economy {
 
     @Override
     public double getBalance(String name) {
-        Player p = Bukkit.getPlayer(name);
-        assert p != null;
-        return EconomyManager.getBalance(p.getUniqueId());
+        OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(name);
+        return player != null ? getBalance(player) : 0.0;
     }
 
     @Override
     public double getBalance(OfflinePlayer p) {
-        return EconomyManager.getBalance(p.getUniqueId());
+        return currency.getOrDefault(p.getUniqueId(), 0.0);
     }
 
     @Override
@@ -93,54 +129,63 @@ public class VaultEconManager implements Economy {
 
     @Override
     public boolean has(String name, double amount) {
-        Player p = Bukkit.getPlayer(name);
-        assert p != null;
-        return EconomyManager.hasEnough(p.getUniqueId(), amount);
+        OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(name);
+        return player != null && has(player, amount);
     }
 
     @Override
     public boolean has(OfflinePlayer p, double amount) {
-        return EconomyManager.hasEnough(p.getUniqueId(), amount);
+        if (p.isOnline()) {
+            return currency.get(p.getUniqueId()) < amount;
+        } else {
+            // This is only to be called during async tasks. Other plugins shouldn't be messing with this if possible.
+            CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
+                MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().contains("currency"))
+                        .findFirst().orElseThrow();
+                double balance = Double.parseDouble(currencyNode.getMetaKey().split(":")[1]);
+                return balance < amount;
+            });
+            return boolFuture.join();
+        }
     }
 
     @Override
     public boolean has(String playerName, String worldName, double amount) {
-        Player p = Bukkit.getPlayer(playerName);
-        assert p != null;
-        return EconomyManager.hasEnough(p.getUniqueId(), amount);
+        return has(playerName, amount);
     }
 
     @Override
     public boolean has(OfflinePlayer p, String worldName, double amount) {
-        return EconomyManager.hasEnough(p.getUniqueId(), amount);
+        return has(p, amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String name, double amount) {
         Player p = Bukkit.getPlayer(name);
-        assert p != null;
-        EconomyManager.removeCurrency(p.getUniqueId(), amount);
-        return new EconomyResponse(-amount, EconomyManager.getBalance(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+        if (p != null) {
+            return withdrawPlayer(p, amount);
+        } else {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(name);
+            if (offlinePlayer != null) {
+                return withdrawPlayer(offlinePlayer, amount);
+            } else return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Invalid Player.");
+        }
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount) {
-        EconomyManager.removeCurrency(p.getUniqueId(), amount);
-        return new EconomyResponse(-amount, EconomyManager.getBalance(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+        currency.put(p.getUniqueId(), getBalance(p) - amount);
+        return new EconomyResponse(-amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
-        Player p = Bukkit.getPlayer(playerName);
-        assert p != null;
-        EconomyManager.removeCurrency(p.getUniqueId(), amount);
-        return new EconomyResponse(-amount, EconomyManager.getBalance(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+        return withdrawPlayer(playerName, amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer p, String worldName, double amount) {
-        EconomyManager.removeCurrency(p.getUniqueId(), amount);
-        return new EconomyResponse(-amount, EconomyManager.getBalance(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+        return withdrawPlayer(p, amount);
     }
 
     @Override
@@ -169,6 +214,17 @@ public class VaultEconManager implements Economy {
     public EconomyResponse depositPlayer(OfflinePlayer p, String worldName, double amount) {
         EconomyManager.addBalance(p.getUniqueId(), amount);
         return new EconomyResponse(amount, EconomyManager.getBalance(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+    }
+
+    public @NotNull HashMap<UUID, Double> getOnlineSortedMap() {
+        LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
+
+        currency.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+
+        return sortedMap;
     }
 
     @Override

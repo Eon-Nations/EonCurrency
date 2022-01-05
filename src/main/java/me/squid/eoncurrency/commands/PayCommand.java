@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.managers.VaultEconManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
@@ -10,8 +9,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Objects;
 
 public class PayCommand implements CommandExecutor {
 

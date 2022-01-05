@@ -4,11 +4,12 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.events.*;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
-import me.squid.eoncurrency.managers.EconomyManager;
+import me.squid.eoncurrency.jobs.Jobs;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,10 @@ public class JobsEventListener implements Listener {
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
         if (e.getWorld().getName().equals("spawn_void")) return;
+        if (e.getJob().getEnumJob().equals(Jobs.MINER) &&
+        e.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+            return;
+        }
         sendJobReward(e.getPlayer(), "break", e.getJob(), e.getMaterial().name(), 1);
     }
 
