@@ -44,4 +44,4 @@ jobs:
             MAIN_SERVER_KNOWN_HOSTS: ${{ secrets.MAIN_SERVER_KNOWN_HOSTS }}    
       
       - name: Upload JAR to Server
-        run: scp -i action-key target/EonHomes-1.0.jar mceonsurvival@34.132.82.48:~/papermc/plugins
+        run: scp -i action-key target/Eoncurrency-1.0.jar mceonsurvival@34.132.82.48:~/papermc/plugins
