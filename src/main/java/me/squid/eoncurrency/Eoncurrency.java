@@ -6,14 +6,18 @@ import me.squid.eoncurrency.listeners.JobsEventListener;
 import me.squid.eoncurrency.listeners.JoinListener;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
 import me.squid.eoncurrency.listeners.WorldInteractListener;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.managers.JobsManager;
 import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.menus.JobInfoMenu;
+import me.squid.eoncurrency.utils.Utils;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Eoncurrency extends JavaPlugin {
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -21,7 +25,6 @@ public final class Eoncurrency extends JavaPlugin {
         registerListeners();
         registerJobs();
         registerManagers();
-        hookVault();
     }
 
     @Override
@@ -59,13 +62,14 @@ public final class Eoncurrency extends JavaPlugin {
         new SQLManager(this);
     }
 
-    public void hookVault(){
-        VaultHook vaultHook = new VaultHook();
-        vaultHook.hook();
+    public EconManager hookToVault() {
+        EconManager econManager = new EconManager();
+        Bukkit.getServicesManager().register(Economy.class, econManager, Eoncurrency.getPlugin(Eoncurrency.class), ServicePriority.Normal);
+        Bukkit.getConsoleSender().sendMessage(Utils.chat("&aVault has successfully hooked to Economy"));
+        return econManager;
     }
 
-    public void unHookVault(){
-        VaultHook vaultHook = new VaultHook();
-        vaultHook.unhook();
+    public void unHookVault(EconManager econManager){
+        Bukkit.getServicesManager().unregister(Economy.class, econManager);
     }
 }

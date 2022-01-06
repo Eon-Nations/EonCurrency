@@ -1,7 +1,7 @@
 package me.squid.eoncurrency.commands.subcommands.currency;
 
 import me.squid.eoncurrency.commands.SubCommand;
-import me.squid.eoncurrency.managers.VaultEconManager;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class EcoGetCommand extends SubCommand {
 
-    VaultEconManager vaultEconManager = new VaultEconManager();
+    EconManager econManager = new EconManager();
 
     @Override
     public String getName() {
@@ -33,7 +33,7 @@ public class EcoGetCommand extends SubCommand {
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null){
-                    double amount = vaultEconManager.getBalance(target);
+                    double amount = econManager.getBalance(target);
                     sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has $" + amount));
                 } else {
                     sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));

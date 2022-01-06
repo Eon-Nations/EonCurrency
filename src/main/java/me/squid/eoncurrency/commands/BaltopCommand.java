@@ -1,6 +1,7 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -22,18 +23,18 @@ import java.util.List;
 public class BaltopCommand implements CommandExecutor {
 
     Eoncurrency plugin;
+    EconManager econManager;
 
-    public BaltopCommand(Eoncurrency plugin) {
+    public BaltopCommand(Eoncurrency plugin, EconManager econManager) {
         this.plugin = plugin;
+        this.econManager = econManager;
         plugin.getCommand("baltop").setExecutor(this);
     }
 
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             p.openInventory(getTopBalances());
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
         }
@@ -44,10 +45,10 @@ public class BaltopCommand implements CommandExecutor {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&b&lTop Balances"));
         int count = 1;
 
-        for (UUID uuid : EconomyManager.getOnlineSortedMap().keySet()) {
+        for (UUID uuid : econManager.getOnlineSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
             DecimalFormat df = new DecimalFormat("#.##");
-            Double money = EconomyManager.getBalance(p.getUniqueId());
+            double money = econManager.getBalance(p);
             money = Double.parseDouble(df.format(money));
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);

@@ -1,6 +1,7 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.menus.EcoMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -14,18 +15,18 @@ import java.util.Objects;
 public class BalanceCommand implements CommandExecutor {
 
     Eoncurrency plugin;
-    EcoMenu ecoMenu = new EcoMenu();
+    EcoMenu ecoMenu;
 
-    public BalanceCommand(Eoncurrency plugin) {
+    public BalanceCommand(Eoncurrency plugin, EcoMenu ecoMenu) {
         this.plugin = plugin;
-        Objects.requireNonNull(plugin.getCommand("balance")).setExecutor(this);
+        this.ecoMenu = ecoMenu;
+        plugin.getCommand("balance").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             if (args.length == 0) {
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
                 p.openInventory(ecoMenu.Main(p));

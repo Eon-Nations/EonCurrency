@@ -1,7 +1,7 @@
 package me.squid.eoncurrency.commands.subcommands.currency;
 
 import me.squid.eoncurrency.commands.SubCommand;
-import me.squid.eoncurrency.managers.VaultEconManager;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class EcoTakeCommand extends SubCommand {
 
-    VaultEconManager econManager = new VaultEconManager();
+    EconManager econManager = new EconManager();
 
     @Override
     public String getName() {

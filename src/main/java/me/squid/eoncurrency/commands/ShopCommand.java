@@ -12,18 +12,18 @@ import java.util.Objects;
 public class ShopCommand implements CommandExecutor {
 
     Eoncurrency plugin;
-    EcoMenu ecoMenu = new EcoMenu();
+    EcoMenu ecoMenu;
 
-    public ShopCommand(Eoncurrency plugin) {
+    public ShopCommand(Eoncurrency plugin, EcoMenu ecoMenu) {
         this.plugin = plugin;
-        Objects.requireNonNull(plugin.getCommand("shop")).setExecutor(this);
+        this.ecoMenu = ecoMenu;
+        plugin.getCommand("shop").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             p.openInventory(ecoMenu.ShopCategory());
         }
 

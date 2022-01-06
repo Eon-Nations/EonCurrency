@@ -1,7 +1,7 @@
 package me.squid.eoncurrency.listeners;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.VaultEconManager;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.menus.EcoMenu;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
@@ -17,7 +17,7 @@ public class ShopMenuListener implements Listener {
 
     Eoncurrency plugin;
     EcoMenu ecoMenu = new EcoMenu();
-    VaultEconManager vaultEconManager = new VaultEconManager();
+    EconManager econManager = new EconManager();
 
     public ShopMenuListener(Eoncurrency plugin) {
         this.plugin = plugin;
@@ -135,11 +135,11 @@ public class ShopMenuListener implements Listener {
                 if (e.getCurrentItem().getItemMeta().displayName().toString().equalsIgnoreCase((e.getClickedInventory().getItem(i)).getItemMeta().displayName().toString())) {
                     ItemStack item = new ItemStack(e.getCurrentItem().getType(), 64);
 
-                    if (vaultEconManager.has(p, 64 * (i + 1) * getPrice(item.getType()))){
+                    if (econManager.has(p, 64 * (i + 1) * getPrice(item.getType()))){
                         for (int j = 0; j <= i; j++) {
                             p.getInventory().addItem(item);
                         }
-                        vaultEconManager.withdrawPlayer(p, 64 * (i + 1) * getPrice(item.getType()));
+                        econManager.withdrawPlayer(p, 64 * (i + 1) * getPrice(item.getType()));
                         p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aYou have spent $" + (64 * (i + 1) * getPrice(item.getType()))));
                     } else {
                         p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &4Insufficient Funds"));
@@ -158,8 +158,8 @@ public class ShopMenuListener implements Listener {
         ItemStack item;
         item = new ItemStack(material, amount);
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
-        if (vaultEconManager.has(p, price * amount)) {
-            vaultEconManager.withdrawPlayer(p, price * amount);
+        if (econManager.has(p, price * amount)) {
+            econManager.withdrawPlayer(p, price * amount);
             p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aYou have spent $" + price * amount));
             p.getInventory().addItem(item);
         } else {
