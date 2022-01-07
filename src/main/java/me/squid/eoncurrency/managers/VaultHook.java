@@ -8,7 +8,7 @@ import org.bukkit.plugin.ServicePriority;
 
 public class VaultHook {
 
-    private final Economy provider = new VaultEconManager();
+    private final Economy provider = new EconManager();
 
     public void hook(){
         Bukkit.getServicesManager().register(Economy.class, provider, Eoncurrency.getPlugin(Eoncurrency.class), ServicePriority.Normal);

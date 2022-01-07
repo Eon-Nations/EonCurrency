@@ -4,11 +4,13 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.events.*;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
-import me.squid.eoncurrency.managers.EconomyManager;
+import me.squid.eoncurrency.jobs.Jobs;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,16 +19,22 @@ public class JobsEventListener implements Listener {
 
     Eoncurrency plugin;
     JobFileManager jobFileManager;
+    EconManager econManager;
 
-    public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager) {
+    public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager, EconManager econManager) {
         this.plugin = plugin;
         this.jobFileManager = jobFileManager;
+        this.econManager = econManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void onJobBreakEvent(JobBreakEvent e) {
         if (e.getWorld().getName().equals("spawn_void")) return;
+        if (e.getJob().getEnumJob().equals(Jobs.MINER) &&
+        e.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+            return;
+        }
         sendJobReward(e.getPlayer(), "break", e.getJob(), e.getMaterial().name(), 1);
     }
 
@@ -102,7 +110,7 @@ public class JobsEventListener implements Listener {
 
     private double giveMoneyToPlayer(Player p, String action, Job job, String type, double amount) {
         double baseReward = jobFileManager.getPriceForAction(action, job.getEnumJob(), type) * amount;
-        EconomyManager.addBalance(p.getUniqueId(), baseReward * getMultiplier(job.getExp()));
+        econManager.depositPlayer(p, baseReward * getMultiplier(job.getExp()));
         return baseReward * getMultiplier(job.getExp());
     }
 

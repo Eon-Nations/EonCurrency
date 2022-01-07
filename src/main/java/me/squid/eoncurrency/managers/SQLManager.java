@@ -54,6 +54,7 @@ public class SQLManager {
         }
     }
 
+    /*
     public static void updateBalance(UUID uuid) {
         try {
             if (!currencyPlayerExists(uuid)) addNewCurencyPlayer(uuid);
@@ -67,6 +68,7 @@ public class SQLManager {
             reconnectToDatabase(e);
         }
     }
+     */
 
     public static double getBalance(UUID uuid) {
         try {
@@ -152,8 +154,7 @@ public class SQLManager {
                 if (rs.next()) {
                     Jobs job = Jobs.valueOf(rs.getString("JOB").toUpperCase());
                     double exp = rs.getDouble("EXPLEVEL");
-                    int level = rs.getInt("LVL");
-                    return new Job(job, level, exp, getEventsFromJob(job));
+                    return new Job(job, exp);
                 }
             } catch (SQLException e) {
                 reconnectToDatabase(e);

@@ -20,6 +20,7 @@ public class JobEnchantEvent extends Event {
     int level;
 
     public JobEnchantEvent(Player p, Map<Enchantment, Integer> enchantments, Job job, ItemStack item, int level) {
+        super(true);
         this.p = p;
         this.enchantments = enchantments;
         this.job = job;

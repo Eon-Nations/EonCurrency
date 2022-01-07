@@ -5,21 +5,18 @@ import me.squid.eoncurrency.utils.Utils;
 
 public class Job {
     Jobs job;
-    int level;
     double exp;
     Events[] eventsToListen;
 
-    public Job(Jobs job, int level, double exp, Events[] eventsToListen) {
+    public Job(Jobs job, double exp) {
         this.job = job;
-        this.level = level;
         this.exp = exp;
-        this.eventsToListen = eventsToListen;
+        this.eventsToListen = SQLManager.getEventsFromJob(job);
     }
 
     public Job(Jobs job) {
         this.job = job;
-        this.level = 1;
-        this.exp = 1.0;
+        this.exp = 0.0;
         this.eventsToListen = SQLManager.getEventsFromJob(job);
     }
 

@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.menus;
 
-import me.squid.eoncurrency.managers.CoinManager;
-import me.squid.eoncurrency.managers.VaultEconManager;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,8 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class EcoMenu {
+    EconManager econManager;
 
-    VaultEconManager econManager = new VaultEconManager();
+    public EcoMenu(EconManager econManager) {
+        this.econManager = econManager;
+    }
 
     public Inventory Main (Player p){
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCurrency Menu"));

@@ -5,16 +5,13 @@ import me.squid.eoncurrency.commands.subcommands.currency.EcoGetCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoGiveCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoResetCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoTakeCommand;
-import me.squid.eoncurrency.managers.EconomyManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class EconomyCommandManager implements CommandExecutor {
 
