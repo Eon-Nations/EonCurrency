@@ -5,6 +5,7 @@ import me.squid.eoncurrency.events.*;
 import me.squid.eoncurrency.jobs.Job;
 import me.squid.eoncurrency.jobs.JobFileManager;
 import me.squid.eoncurrency.jobs.Jobs;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -18,10 +19,12 @@ public class JobsEventListener implements Listener {
 
     Eoncurrency plugin;
     JobFileManager jobFileManager;
+    EconManager econManager;
 
-    public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager) {
+    public JobsEventListener(Eoncurrency plugin, JobFileManager jobFileManager, EconManager econManager) {
         this.plugin = plugin;
         this.jobFileManager = jobFileManager;
+        this.econManager = econManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -107,7 +110,7 @@ public class JobsEventListener implements Listener {
 
     private double giveMoneyToPlayer(Player p, String action, Job job, String type, double amount) {
         double baseReward = jobFileManager.getPriceForAction(action, job.getEnumJob(), type) * amount;
-        EconomyManager.addBalance(p.getUniqueId(), baseReward * getMultiplier(job.getExp()));
+        econManager.depositPlayer(p, baseReward * getMultiplier(job.getExp()));
         return baseReward * getMultiplier(job.getExp());
     }
 

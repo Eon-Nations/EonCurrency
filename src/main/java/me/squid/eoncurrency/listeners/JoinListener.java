@@ -25,18 +25,16 @@ public class JoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
         if (!econManager.hasAccount(p)) {
-            econManager.addPlayerToCache(e.getPlayer());
+            econManager.createPlayerAccount(e.getPlayer());
         } else {
-            econManager.savePlayer();
+            econManager.loadPlayer(p);
         }
-        EconomyManager.loadPlayerIntoMap(e.getPlayer());
         JobsManager.loadPlayerFromSQL(e.getPlayer());
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
-        Player p = e.getPlayer();
-        EconomyManager.savePlayerToSQL(e.getPlayer());
+        econManager.savePlayer(e.getPlayer());
         JobsManager.loadPlayerToSQL(e.getPlayer());
     }
 }

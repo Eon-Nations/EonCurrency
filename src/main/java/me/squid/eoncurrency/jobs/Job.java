@@ -8,10 +8,10 @@ public class Job {
     double exp;
     Events[] eventsToListen;
 
-    public Job(Jobs job, double exp, Events[] eventsToListen) {
+    public Job(Jobs job, double exp) {
         this.job = job;
         this.exp = exp;
-        this.eventsToListen = eventsToListen;
+        this.eventsToListen = SQLManager.getEventsFromJob(job);
     }
 
     public Job(Jobs job) {

@@ -66,14 +66,6 @@ public class EconManager implements Economy {
         return "dollar";
     }
 
-    public void addPlayerToCache(OfflinePlayer player) {
-        if (hasAccount(player)) {
-            currency.put(player.getUniqueId(), loadPlayer(player));
-        } else {
-            currency.put(player.getUniqueId(), 0.0);
-        }
-    }
-
     public double loadPlayer(OfflinePlayer player) {
         if (luckPerms.getUserManager().isLoaded(player.getUniqueId())) {
             Bukkit.getLogger().info("Player is loaded on startup");
@@ -321,21 +313,28 @@ public class EconManager implements Economy {
 
     @Override
     public boolean createPlayerAccount(String playerName) {
-        return false;
+        OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(playerName);
+        if (player != null) {
+            return createPlayerAccount(player);
+        } else return false;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer p) {
-        return false;
+        if (!currency.containsKey(p.getUniqueId())) {
+            currency.put(p.getUniqueId(), 0.0);
+            savePlayer(p);
+            return true;
+        } else return false;
     }
 
     @Override
     public boolean createPlayerAccount(String playerName, String worldName) {
-        return false;
+        return createPlayerAccount(playerName);
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player, String worldName) {
-        return false;
+        return createPlayerAccount(player);
     }
 }

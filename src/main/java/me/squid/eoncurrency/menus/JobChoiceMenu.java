@@ -54,7 +54,7 @@ public class JobChoiceMenu implements Listener {
 
             if (e.getClick().isRightClick() && enumJob != null) {
                 if (!confirmationMap.containsKey(p.getUniqueId())) {
-                    Job job = new Job(enumJob, 0, 0.0, SQLManager.getEventsFromJob(enumJob));
+                    Job job = new Job(enumJob, 0.0);
                     confirmationMap.put(p.getUniqueId(), job);
                     p.closeInventory();
                     p.openInventory(confirmationInv);

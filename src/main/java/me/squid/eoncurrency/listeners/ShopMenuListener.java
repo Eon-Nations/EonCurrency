@@ -16,11 +16,13 @@ import org.bukkit.inventory.ItemStack;
 public class ShopMenuListener implements Listener {
 
     Eoncurrency plugin;
-    EcoMenu ecoMenu = new EcoMenu();
-    EconManager econManager = new EconManager();
+    EcoMenu ecoMenu;
+    EconManager econManager;
 
-    public ShopMenuListener(Eoncurrency plugin) {
+    public ShopMenuListener(Eoncurrency plugin, EcoMenu ecoMenu, EconManager econManager) {
         this.plugin = plugin;
+        this.ecoMenu = ecoMenu;
+        this.econManager = econManager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
