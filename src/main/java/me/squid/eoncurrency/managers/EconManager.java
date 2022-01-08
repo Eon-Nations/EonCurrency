@@ -153,7 +153,7 @@ public class EconManager implements Economy {
             CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
                 MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
                         .findFirst().orElseThrow();
-                double balance = Double.parseDouble(currencyNode.getMetaKey().split(":")[1]);
+                double balance = Double.parseDouble(currencyNode.getMetaValue());
                 return balance < amount;
             });
             return boolFuture.join();
