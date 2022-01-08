@@ -5,6 +5,7 @@ import me.squid.eoncurrency.commands.subcommands.currency.EcoGetCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoGiveCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoResetCommand;
 import me.squid.eoncurrency.commands.subcommands.currency.EcoTakeCommand;
+import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,20 +20,18 @@ public class EconomyCommandManager implements CommandExecutor {
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
-    public EconomyCommandManager(Eoncurrency plugin) {
+    public EconomyCommandManager(Eoncurrency plugin, EconManager econManager) {
         this.plugin = plugin;
-        subCommands.add(new EcoGetCommand());
-        subCommands.add(new EcoGiveCommand());
-        subCommands.add(new EcoResetCommand());
-        subCommands.add(new EcoTakeCommand());
+        subCommands.add(new EcoGetCommand(econManager));
+        subCommands.add(new EcoGiveCommand(econManager));
+        subCommands.add(new EcoResetCommand(econManager));
+        subCommands.add(new EcoTakeCommand(econManager));
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player){
-            Player p = (Player) sender;
-
+        if (sender instanceof Player p) {
             if (args.length > 0){
                 for (SubCommand subCommand : subCommands) {
                     if (args[0].equalsIgnoreCase(subCommand.getName())) {

@@ -8,5 +8,5 @@ public enum Jobs {
     BLACKSMITH,
     FISHERMAN,
     WOODCUTTER,
-    FARMER;
+    FARMER
 }

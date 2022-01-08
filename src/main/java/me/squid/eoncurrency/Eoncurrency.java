@@ -9,13 +9,11 @@ import me.squid.eoncurrency.listeners.WorldInteractListener;
 import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.managers.JobsManager;
 import me.squid.eoncurrency.managers.SQLManager;
-import me.squid.eoncurrency.managers.VaultHook;
 import me.squid.eoncurrency.menus.EcoMenu;
 import me.squid.eoncurrency.menus.JobInfoMenu;
 import me.squid.eoncurrency.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,8 +37,7 @@ public final class Eoncurrency extends JavaPlugin {
 
     @SuppressWarnings("ConstantConditions")
     public void registerCommands(EcoMenu ecoMenu) {
-        getCommand("coins").setExecutor(new CoinCommandManager(this));
-        getCommand("economy").setExecutor(new EconomyCommandManager(this));
+        getCommand("economy").setExecutor(new EconomyCommandManager(this, econManager));
         new PayCommand(this, econManager);
         new BalanceCommand(this, ecoMenu);
         new ShopCommand(this, ecoMenu);

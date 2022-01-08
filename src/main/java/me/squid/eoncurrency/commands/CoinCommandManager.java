@@ -38,7 +38,7 @@ public class CoinCommandManager implements CommandExecutor {
             if (args.length > 0){
                 for (SubCommand subCommand : subCommands) {
                     if (args[0].equalsIgnoreCase(subCommand.getName())) {
-                        subCommand.execute(p, args);
+                        //subCommand.execute(p, args);
                         break;
                     }
                 }

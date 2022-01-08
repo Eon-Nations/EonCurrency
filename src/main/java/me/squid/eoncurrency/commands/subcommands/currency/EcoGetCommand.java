@@ -9,8 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EcoGetCommand extends SubCommand {
+    EconManager econManager;
 
-    EconManager econManager = new EconManager();
+    public EcoGetCommand(EconManager econManager) {
+        this.econManager = econManager;
+    }
 
     @Override
     public String getName() {
@@ -32,14 +35,14 @@ public class EcoGetCommand extends SubCommand {
         if (args.length > 1){
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[1]);
-                if (target != null){
+                if (target != null) {
                     double amount = econManager.getBalance(target);
                     sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &a" + target.getName() + " has $" + amount));
                 } else {
                     sender.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &aPlayer is offline"));
                 }
             }
-        } else if (args.length == 1){
+        } else if (args.length == 1) {
             sender.sendMessage(ChatColor.BLUE + getSyntax());
         }
     }

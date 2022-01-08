@@ -10,7 +10,11 @@ import org.bukkit.entity.Player;
 
 public class EcoResetCommand extends SubCommand {
 
-    EconManager econManager = new EconManager();
+    EconManager econManager;
+
+    public EcoResetCommand(EconManager econManager) {
+        this.econManager = econManager;
+    }
 
     @Override
     public String getName() {
@@ -29,7 +33,7 @@ public class EcoResetCommand extends SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length > 1){
+        if (args.length > 1) {
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null){

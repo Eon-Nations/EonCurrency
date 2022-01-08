@@ -10,7 +10,11 @@ import org.bukkit.entity.Player;
 
 public class EcoTakeCommand extends SubCommand {
 
-    EconManager econManager = new EconManager();
+    EconManager econManager;
+
+    public EcoTakeCommand(EconManager econManager) {
+        this.econManager = econManager;
+    }
 
     @Override
     public String getName() {
