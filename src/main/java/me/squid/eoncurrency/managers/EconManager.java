@@ -93,7 +93,8 @@ public class EconManager implements Economy {
     @Override
     public boolean hasAccount(OfflinePlayer p) {
         if (p.isOnline()) {
-            return currency.containsKey(p.getUniqueId());
+            User user = luckPerms.getUserManager().getUser(p.getUniqueId());
+            return user.getNodes(NodeType.META).stream().anyMatch(node -> node.getMetaKey().equals("balance"));
         } else {
             // This is a blocking method. However, by most plugins, this will not be called unless it is on an async thread.
             // So it should be fine to exist here.
