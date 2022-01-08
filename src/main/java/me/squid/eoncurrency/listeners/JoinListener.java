@@ -27,7 +27,7 @@ public class JoinListener implements Listener {
         if (!econManager.hasAccount(p)) {
             econManager.createPlayerAccount(e.getPlayer());
         } else {
-            econManager.loadPlayer(p);
+            econManager.loadPlayer(e.getPlayer());
         }
         JobsManager.loadPlayerFromSQL(e.getPlayer());
     }

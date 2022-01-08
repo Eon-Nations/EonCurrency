@@ -66,13 +66,12 @@ public class EconManager implements Economy {
         return "dollar";
     }
 
-    public double loadPlayer(OfflinePlayer player) {
-        if (luckPerms.getUserManager().isLoaded(player.getUniqueId())) {
-            Bukkit.getLogger().info("Player is loaded on startup");
-        } else {
-            Bukkit.getLogger().info("Player is not loaded on startup");
-        }
-        return 0.0;
+    public void loadPlayer(OfflinePlayer player) {
+        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+        MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
+                .findFirst().orElseThrow();
+        double balance = Double.parseDouble(currencyNode.getMetaValue());
+        currency.put(player.getUniqueId(), balance);
     }
 
     public void savePlayer(OfflinePlayer player) {
