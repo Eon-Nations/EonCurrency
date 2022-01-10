@@ -148,7 +148,7 @@ public class EconManager implements Economy {
     @Override
     public boolean has(OfflinePlayer p, double amount) {
         if (p.isOnline()) {
-            return currency.get(p.getUniqueId()) < amount;
+            return currency.get(p.getUniqueId()) > amount;
         } else {
             // This is only to be called during async tasks. Other plugins shouldn't be messing with this if possible.
             CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {

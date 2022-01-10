@@ -2,7 +2,6 @@ package me.squid.eoncurrency.listeners;
 
 import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.managers.EconManager;
-import me.squid.eoncurrency.managers.JobsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,12 +28,10 @@ public class JoinListener implements Listener {
         } else {
             econManager.loadPlayer(e.getPlayer());
         }
-        JobsManager.loadPlayerFromSQL(e.getPlayer());
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
         econManager.savePlayer(e.getPlayer());
-        JobsManager.loadPlayerToSQL(e.getPlayer());
     }
 }

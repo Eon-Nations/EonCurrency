@@ -62,8 +62,7 @@ public class Utils {
     }
 
     public static void makeDummySlots(Inventory inv) {
-        ItemStack item;
-        item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+        ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text(""));
         item.setItemMeta(meta);
@@ -73,14 +72,6 @@ public class Utils {
                 inv.setItem(i, item);
             }
         }
-    }
-
-    public static void playHarpSoundAtPlayer(Player p) {
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
-    }
-
-    public static void playBassSoundAtPlayer(Player p) {
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
     }
 
     public static Component getPrefix(String name) {
@@ -104,11 +95,5 @@ public class Utils {
         BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
         bd = bd.setScale(places, RoundingMode.HALF_EVEN);
         return bd.doubleValue();
-    }
-
-    public static double getDoubleLevel(double experience) {
-        double exp = 0.5 * Math.sqrt(experience);
-        if (exp < 1) return 1;
-        else return exp;
     }
 }

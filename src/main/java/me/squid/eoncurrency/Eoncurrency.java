@@ -1,16 +1,10 @@
 package me.squid.eoncurrency;
 
 import me.squid.eoncurrency.commands.*;
-import me.squid.eoncurrency.jobs.JobFileManager;
-import me.squid.eoncurrency.listeners.JobsEventListener;
 import me.squid.eoncurrency.listeners.JoinListener;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
-import me.squid.eoncurrency.listeners.WorldInteractListener;
 import me.squid.eoncurrency.managers.EconManager;
-import me.squid.eoncurrency.managers.JobsManager;
-import me.squid.eoncurrency.managers.SQLManager;
 import me.squid.eoncurrency.menus.EcoMenu;
-import me.squid.eoncurrency.menus.JobInfoMenu;
 import me.squid.eoncurrency.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -26,8 +20,6 @@ public final class Eoncurrency extends JavaPlugin {
         EcoMenu ecoMenu = new EcoMenu(econManager);
         registerCommands(ecoMenu);
         registerListeners(ecoMenu);
-        registerJobs();
-        registerManagers();
     }
 
     @Override
@@ -47,21 +39,6 @@ public final class Eoncurrency extends JavaPlugin {
     public void registerListeners(EcoMenu ecoMenu) {
         new JoinListener(this, econManager);
         new ShopMenuListener(this, ecoMenu, econManager);
-        new WorldInteractListener(this);
-    }
-
-    public void registerJobs() {
-        new JobStatsCommand(this);
-        JobFileManager jobFileManager = new JobFileManager(this);
-        JobInfoMenu jobInfoMenu = new JobInfoMenu(this, jobFileManager);
-        new JobsCommand(this, jobInfoMenu);
-        new JobsEventListener(this, jobFileManager, econManager);
-        new JobsCommand(this, jobInfoMenu);
-    }
-
-    public void registerManagers() {
-        new JobsManager(this);
-        new SQLManager(this);
     }
 
     public EconManager hookToVault() {
