@@ -28,7 +28,3 @@ commands:
   baltop:
     description: Shows the top balances in the server
     aliases: [balancetop]
-  jobmenu:
-    description: Opens the job menu
-  jobstats:
-    description: Get stats about job
