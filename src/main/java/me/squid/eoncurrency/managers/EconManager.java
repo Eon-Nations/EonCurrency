@@ -1,5 +1,9 @@
 package me.squid.eoncurrency.managers;
 
+import io.papermc.paper.chat.ChatRenderer;
+import me.squid.eoncurrency.utils.Utils;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.NodeType;
@@ -180,13 +184,25 @@ public class EconManager implements Economy {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(name);
             if (offlinePlayer != null) {
                 return withdrawPlayer(offlinePlayer, amount);
-            } else return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Invalid Player.");
+            } else return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Player does not exist.");
         }
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount) {
-        currency.put(p.getUniqueId(), getBalance(p) - amount);
+        if (p.isOnline()) {
+            currency.put(p.getUniqueId(), Utils.round(getBalance(p) - amount, 2));
+        } else {
+            luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
+                 MetaNode oldNode = user.getNodes(NodeType.META).stream()
+                         .filter(node -> node.getMetaKey().equals("balance")).findFirst().orElseThrow();
+                 double balance = Double.parseDouble(oldNode.getMetaValue());
+                 MetaNode newNode = MetaNode.builder("balance",
+                         Double.toString(Utils.round(balance - amount, 2))).build();
+                 user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
+                 user.data().add(newNode);
+            });
+        }
         return new EconomyResponse(-amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
     }
 
@@ -217,14 +233,17 @@ public class EconManager implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer p, double amount) {
         if (p.isOnline()) {
-            currency.put(p.getUniqueId(), getBalance(p) + amount);
+            currency.put(p.getUniqueId(), Utils.round(getBalance(p) + amount, 2));
         } else {
-            luckPerms.getUserManager().loadUser(p.getUniqueId()).thenAcceptAsync(user -> {
+            luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
                 MetaNode currencyNode = user.getNodes(NodeType.META).stream()
                                 .filter(node -> node.getMetaKey().equals("balance")).findFirst()
                                 .orElseThrow();
                 double balance = Double.parseDouble(currencyNode.getMetaValue());
-                currency.put(p.getUniqueId(), balance + amount);
+                double amountToAdd = Utils.round(balance + amount, 2);
+                user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
+                MetaNode newCurrency = MetaNode.builder("balance", String.valueOf(amountToAdd)).build();
+                user.data().add(newCurrency);
             });
         }
         return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");

@@ -30,25 +30,22 @@ public class EconomyCommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (sender instanceof Player p) {
-            if (args.length > 0){
-                for (SubCommand subCommand : subCommands) {
-                    if (args[0].equalsIgnoreCase(subCommand.getName())) {
-                        subCommand.execute(p, args);
-                        break;
-                    }
+        if (args.length > 0){
+            for (SubCommand subCommand : subCommands) {
+                if (args[0].equalsIgnoreCase(subCommand.getName())) {
+                    subCommand.execute(sender, args);
+                    break;
                 }
-            } else {
-                p.sendMessage(Utils.chat("&7[------------------------------]"));
-                p.sendMessage(Utils.chat("      &7[&5Eon Survival Economy&r&7]"));
-                p.sendMessage(Utils.chat(""));
-                p.sendMessage(Utils.chat("&7&b/economy give <player> <amount> (Adds money)"));
-                p.sendMessage(Utils.chat("&7&b/economy take <player> <amount> (Takes money)"));
-                p.sendMessage(Utils.chat("&7&b/economy reset <player> (Reset balance to 0)"));
-                p.sendMessage(Utils.chat("&7&b/economy get <player> (Gets the amount)"));
-                p.sendMessage(Utils.chat("&7[------------------------------]"));
             }
+        } else {
+            sender.sendMessage(Utils.chat("&7[------------------------------]"));
+            sender.sendMessage(Utils.chat("      &7[&5Eon Survival Economy&r&7]"));
+            sender.sendMessage(Utils.chat(""));
+            sender.sendMessage(Utils.chat("&7&b/economy give <player> <amount> (Adds money)"));
+            sender.sendMessage(Utils.chat("&7&b/economy take <player> <amount> (Takes money)"));
+            sender.sendMessage(Utils.chat("&7&b/economy reset <player> (Reset balance to 0)"));
+            sender.sendMessage(Utils.chat("&7&b/economy get <player> (Gets the amount)"));
+            sender.sendMessage(Utils.chat("&7[------------------------------]"));
         }
 
         return true;
