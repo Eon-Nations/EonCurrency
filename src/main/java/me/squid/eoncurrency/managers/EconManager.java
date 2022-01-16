@@ -201,6 +201,7 @@ public class EconManager implements Economy {
     public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount) {
         if (p.isOnline()) {
             currency.put(p.getUniqueId(), Utils.round(getBalance(p) - amount, 2));
+            return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
         } else {
             luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
                  MetaNode oldNode = user.getNodes(NodeType.META).stream()
@@ -211,8 +212,8 @@ public class EconManager implements Economy {
                  user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
                  user.data().add(newNode);
             });
+            return new EconomyResponse(amount, getBalance(p), EconomyResponse.ResponseType.SUCCESS, "");
         }
-        return new EconomyResponse(-amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
     }
 
     @Override
@@ -243,6 +244,7 @@ public class EconManager implements Economy {
     public EconomyResponse depositPlayer(OfflinePlayer p, double amount) {
         if (p.isOnline()) {
             currency.put(p.getUniqueId(), Utils.round(getBalance(p) + amount, 2));
+            return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
         } else {
             luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
                 MetaNode currencyNode = user.getNodes(NodeType.META).stream()
@@ -254,8 +256,8 @@ public class EconManager implements Economy {
                 MetaNode newCurrency = MetaNode.builder("balance", String.valueOf(newAmount)).build();
                 user.data().add(newCurrency);
             });
+            return new EconomyResponse(amount, getBalance(p), EconomyResponse.ResponseType.SUCCESS, "");
         }
-        return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
     }
 
     @Override
