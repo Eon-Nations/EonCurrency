@@ -267,14 +267,13 @@ public class EconManager implements Economy {
         return depositPlayer(p, amount);
     }
 
-    public @NotNull HashMap<UUID, Double> getSortedMap() {
+    public @NotNull LinkedHashMap<UUID, Double> getSortedMap() {
         HashMap<UUID, Double> unsortedMap = new HashMap<>();
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Arrays.stream(Bukkit.getOfflinePlayers())
-                    .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player)));
-        });
         LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Arrays.stream(Bukkit.getOfflinePlayers())
+                .filter(player -> getBalance(player) > 0)
+                .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player))));
 
         unsortedMap.entrySet()
                 .stream()

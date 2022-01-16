@@ -36,6 +36,7 @@ public class BaltopCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player p) {
+            p.sendMessage(Utils.chat("&7[&b&lEonEco&r&7] &bLoading balance top menu..."));
             p.openInventory(getTopBalances());
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
         }
@@ -48,9 +49,7 @@ public class BaltopCommand implements CommandExecutor {
 
         for (UUID uuid : econManager.getSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
-            DecimalFormat df = new DecimalFormat("#.##");
             double money = econManager.getBalance(p);
-            money = Double.parseDouble(df.format(money));
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
