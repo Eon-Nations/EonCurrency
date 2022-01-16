@@ -78,6 +78,7 @@ public class EconManager implements Economy {
     }
 
     public void savePlayer(OfflinePlayer player) {
+        currency.remove(player.getUniqueId());
         luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
             MetaNode currencyNode = MetaNode.builder("balance", currency.get(player.getUniqueId()).toString()).build();
             user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals("balance")));
@@ -205,8 +206,8 @@ public class EconManager implements Economy {
                  MetaNode oldNode = user.getNodes(NodeType.META).stream()
                          .filter(node -> node.getMetaKey().equals("balance")).findFirst().orElseThrow();
                  double balance = Double.parseDouble(oldNode.getMetaValue());
-                 MetaNode newNode = MetaNode.builder("balance",
-                         Double.toString(Utils.round(balance - amount, 2))).build();
+                 double amountToRemove = Utils.round(balance - amount, 2);
+                 MetaNode newNode = MetaNode.builder("balance", String.valueOf(amountToRemove)).build();
                  user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
                  user.data().add(newNode);
             });
@@ -248,9 +249,9 @@ public class EconManager implements Economy {
                                 .filter(node -> node.getMetaKey().equals("balance")).findFirst()
                                 .orElseThrow();
                 double balance = Double.parseDouble(currencyNode.getMetaValue());
-                double amountToAdd = Utils.round(balance + amount, 2);
+                double newAmount = Utils.round(balance + amount, 2);
                 user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
-                MetaNode newCurrency = MetaNode.builder("balance", String.valueOf(amountToAdd)).build();
+                MetaNode newCurrency = MetaNode.builder("balance", String.valueOf(newAmount)).build();
                 user.data().add(newCurrency);
             });
         }
