@@ -1,9 +1,7 @@
 package me.squid.eoncurrency.managers;
 
-import io.papermc.paper.chat.ChatRenderer;
+import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.utils.Utils;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.NodeType;
@@ -19,14 +17,15 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 
 public class EconManager implements Economy {
 
     HashMap<UUID, Double> currency;
+    Eoncurrency plugin;
     LuckPerms luckPerms;
 
-    public EconManager() {
+    public EconManager(Eoncurrency plugin) {
+        this.plugin = plugin;
         currency = new HashMap<>();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
@@ -130,7 +129,16 @@ public class EconManager implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer p) {
-        return currency.getOrDefault(p.getUniqueId(), 0.0);
+        if (p.isOnline()) {
+            return currency.getOrDefault(p.getUniqueId(), 0.0);
+        } else {
+            CompletableFuture<Double> balanceFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
+                 MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
+                         .findFirst().orElseThrow();
+                return Double.parseDouble(currencyNode.getMetaValue());
+            });
+            return balanceFuture.join();
+        }
     }
 
     @Override
@@ -259,10 +267,16 @@ public class EconManager implements Economy {
         return depositPlayer(p, amount);
     }
 
-    public @NotNull HashMap<UUID, Double> getOnlineSortedMap() {
+    public @NotNull HashMap<UUID, Double> getSortedMap() {
+        HashMap<UUID, Double> unsortedMap = new HashMap<>();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            Arrays.stream(Bukkit.getOfflinePlayers())
+                    .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player)));
+        });
         LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
 
-        currency.entrySet()
+        unsortedMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));

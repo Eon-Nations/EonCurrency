@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -33,7 +34,7 @@ public class BaltopCommand implements CommandExecutor {
 
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player p) {
             p.openInventory(getTopBalances());
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1);
@@ -45,7 +46,7 @@ public class BaltopCommand implements CommandExecutor {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&b&lTop Balances"));
         int count = 1;
 
-        for (UUID uuid : econManager.getOnlineSortedMap().keySet()) {
+        for (UUID uuid : econManager.getSortedMap().keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
             DecimalFormat df = new DecimalFormat("#.##");
             double money = econManager.getBalance(p);
@@ -54,7 +55,7 @@ public class BaltopCommand implements CommandExecutor {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
             meta.setOwningPlayer(p);
-            meta.displayName(Component.text(Utils.chat("&a#" + count + ". &b" + p.getName())));
+            meta.displayName(Component.text(Utils.chat("&a#" + count++ + ". &b" + p.getName())));
             if (p.getPlayer() != null) {
                 meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
             }
@@ -65,7 +66,6 @@ public class BaltopCommand implements CommandExecutor {
             item.setItemMeta(meta);
 
             inv.addItem(item);
-            ++count;
         }
 
         return inv;
