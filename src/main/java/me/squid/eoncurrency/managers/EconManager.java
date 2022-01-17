@@ -78,9 +78,8 @@ public class EconManager implements Economy {
     }
 
     public void savePlayer(OfflinePlayer player) {
-        currency.remove(player.getUniqueId());
         luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
-            MetaNode currencyNode = MetaNode.builder("balance", currency.get(player.getUniqueId()).toString()).build();
+            MetaNode currencyNode = MetaNode.builder("balance", currency.remove(player.getUniqueId()).toString()).build();
             user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals("balance")));
             user.data().add(currencyNode);
         });
