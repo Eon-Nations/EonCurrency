@@ -274,12 +274,8 @@ public class EconManager implements Economy {
         HashMap<UUID, Double> unsortedMap = new HashMap<>();
         LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
         Stream<OfflinePlayer> stream = Arrays.stream(Bukkit.getOfflinePlayers());
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> stream
-                .filter(player -> getBalance(player) > 0)
-                .forEach(player -> {
-                    unsortedMap.put(player.getUniqueId(), getBalance(player));
-                    plugin.getLogger().info("OfflinePlayer: " + player.getName());
-                }));
+        stream.filter(player -> getBalance(player) > 0)
+                        .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player)));
 
         unsortedMap.entrySet()
                 .stream()

@@ -55,7 +55,7 @@ public class BaltopCommand implements CommandExecutor {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
             meta.setOwningPlayer(p);
-            meta.displayName(Component.text(Utils.chat("&a#" + count++ + ". &b" + p.getName())));
+            meta.displayName(Component.text(Utils.chat("&a#" + (count++) + ". &b" + p.getName())));
             if (p.getPlayer() != null) {
                 meta.setPlayerProfile(p.getPlayer().getPlayerProfile());
             }
