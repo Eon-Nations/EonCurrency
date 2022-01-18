@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class EconManager implements Economy {
 
@@ -133,6 +134,7 @@ public class EconManager implements Economy {
             return currency.getOrDefault(p.getUniqueId(), 0.0);
         } else {
             CompletableFuture<Double> balanceFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
+                user.getNodes(NodeType.META).forEach(node -> plugin.getLogger().info("Node Key: " + node.getMetaKey()));
                  MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
                          .findFirst().orElseThrow();
                 return Double.parseDouble(currencyNode.getMetaValue());
@@ -272,10 +274,13 @@ public class EconManager implements Economy {
     public @NotNull LinkedHashMap<UUID, Double> getSortedMap() {
         HashMap<UUID, Double> unsortedMap = new HashMap<>();
         LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Arrays.stream(Bukkit.getOfflinePlayers())
+        Stream<OfflinePlayer> stream = Arrays.stream(Bukkit.getOfflinePlayers());
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> stream
                 .filter(player -> getBalance(player) > 0)
-                .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player))));
+                .forEach(player -> {
+                    unsortedMap.put(player.getUniqueId(), getBalance(player));
+                    plugin.getLogger().info("OfflinePlayer: " + player.getName());
+                }));
 
         unsortedMap.entrySet()
                 .stream()

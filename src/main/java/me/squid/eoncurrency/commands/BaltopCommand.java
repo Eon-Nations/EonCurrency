@@ -46,10 +46,11 @@ public class BaltopCommand implements CommandExecutor {
     private Inventory getTopBalances() {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&b&lTop Balances"));
         int count = 1;
+        HashMap<UUID, Double> sortedMap = econManager.getSortedMap();
 
-        for (UUID uuid : econManager.getSortedMap().keySet()) {
+        for (UUID uuid : sortedMap.keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
-            double money = econManager.getBalance(p);
+            double money = sortedMap.get(p.getUniqueId());
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
