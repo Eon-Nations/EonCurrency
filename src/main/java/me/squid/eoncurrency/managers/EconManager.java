@@ -134,9 +134,8 @@ public class EconManager implements Economy {
             return currency.getOrDefault(p.getUniqueId(), 0.0);
         } else {
             CompletableFuture<Double> balanceFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
-                user.getNodes(NodeType.META).forEach(node -> plugin.getLogger().info("Node Key: " + node.getMetaKey()));
                  MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
-                         .findFirst().orElseThrow();
+                         .findFirst().orElse(MetaNode.builder("balance", String.valueOf(0.0)).build());
                 return Double.parseDouble(currencyNode.getMetaValue());
             });
             return balanceFuture.join();
