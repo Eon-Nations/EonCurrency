@@ -50,7 +50,7 @@ public class BaltopCommand implements CommandExecutor {
 
         for (UUID uuid : sortedMap.keySet()) {
             OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
-            double money = sortedMap.get(p.getUniqueId());
+            double money = Utils.round(sortedMap.get(uuid), 2);
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
