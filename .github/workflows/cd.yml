@@ -38,10 +38,9 @@ jobs:
           mkdir ~/.ssh/
           echo "$MAIN_SERVER_PRIV_KEY" >action-key
           sudo chmod 600 action-key
-          echo "$MAIN_SERVER_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh-keyscan -H mceonsurvival.com > ~/.ssh/known_hosts
         env:
             MAIN_SERVER_PRIV_KEY: ${{ secrets.MAIN_SERVER_PRIV_KEY }}
-            MAIN_SERVER_KNOWN_HOSTS: ${{ secrets.MAIN_SERVER_KNOWN_HOSTS }}    
       
       - name: Upload JAR to Server
         run: scp -i action-key target/eoncurrency-1.0.jar opc@mceonsurvival.com:~/papermc/plugins
