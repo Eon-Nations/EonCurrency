@@ -4,6 +4,8 @@ import me.squid.eoncurrency.Eoncurrency;
 import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
+import redis.clients.jedis.Jedis;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,19 +13,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PayCommand implements CommandExecutor {
-
-    Eoncurrency plugin;
     EconManager econManager;
 
     public PayCommand(Eoncurrency plugin, EconManager econManager) {
-        this.plugin = plugin;
         this.econManager = econManager;
         plugin.getCommand("pay").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (sender instanceof Player p) {
             if (args.length == 2){
                 Player target = Bukkit.getPlayer(args[0]);

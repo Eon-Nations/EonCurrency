@@ -1,37 +1,22 @@
 package me.squid.eoncurrency.managers;
 
-import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.utils.Utils;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.NodeType;
-import net.luckperms.api.node.types.MetaNode;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 public class EconManager implements Economy {
 
-    HashMap<UUID, Double> currency;
-    Eoncurrency plugin;
-    LuckPerms luckPerms;
+    JedisPool pool;
 
-    public EconManager(Eoncurrency plugin) {
-        this.plugin = plugin;
-        currency = new HashMap<>();
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (provider != null) {
-            luckPerms = provider.getProvider();
-        }
+    public EconManager() {
+        this.pool = new JedisPool("localhost");
     }
 
     @Override
@@ -70,22 +55,6 @@ public class EconManager implements Economy {
         return "dollar";
     }
 
-    public void loadPlayer(OfflinePlayer player) {
-        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
-        MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
-                .findFirst().orElseThrow();
-        double balance = Double.parseDouble(currencyNode.getMetaValue());
-        currency.put(player.getUniqueId(), balance);
-    }
-
-    public void savePlayer(OfflinePlayer player) {
-        luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
-            MetaNode currencyNode = MetaNode.builder("balance", currency.remove(player.getUniqueId()).toString()).build();
-            user.data().clear(NodeType.META.predicate(mn -> mn.getMetaKey().equals("balance")));
-            user.data().add(currencyNode);
-        });
-    }
-
     @Override
     public boolean hasAccount(String playerName) {
         OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(playerName);
@@ -96,20 +65,7 @@ public class EconManager implements Economy {
 
     @Override
     public boolean hasAccount(OfflinePlayer p) {
-        if (p.isOnline()) {
-            User user = luckPerms.getUserManager().getUser(p.getUniqueId());
-            return user.getNodes(NodeType.META).stream().anyMatch(node -> node.getMetaKey().equals("balance"));
-        } else {
-            // This is a blocking method. However, by most plugins, this will not be called unless it is on an async thread.
-            // So it should be fine to exist here.
-            CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
-                Optional<MetaNode> optionalNode = user.getNodes(NodeType.META).stream()
-                        .filter(node -> node.getMetaKey().equals("balance"))
-                        .findFirst();
-                return optionalNode.isPresent();
-            });
-            return boolFuture.join();
-        }
+        return p.hasPlayedBefore();
     }
 
     @Override
@@ -130,15 +86,17 @@ public class EconManager implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer p) {
-        if (p.isOnline()) {
-            return currency.getOrDefault(p.getUniqueId(), 0.0);
-        } else {
-            CompletableFuture<Double> balanceFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
-                 MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
-                         .findFirst().orElse(MetaNode.builder("balance", String.valueOf(0.0)).build());
-                return Double.parseDouble(currencyNode.getMetaValue());
-            });
-            return balanceFuture.join();
+        try (Jedis jedis = pool.getResource()) {
+            return getBalance(p, jedis);
+        }
+    }
+
+    public double getBalance(OfflinePlayer p, Jedis jedis) {
+        try {
+            String balance = jedis.get(p.getName() + "#balance");
+            return Double.parseDouble(balance);
+        } catch (NumberFormatException e) {
+            return 0.0;
         }
     }
 
@@ -160,17 +118,9 @@ public class EconManager implements Economy {
 
     @Override
     public boolean has(OfflinePlayer p, double amount) {
-        if (p.isOnline()) {
-            return currency.get(p.getUniqueId()) > amount;
-        } else {
-            // This is only to be called during async tasks. Other plugins shouldn't be messing with this if possible.
-            CompletableFuture<Boolean> boolFuture = luckPerms.getUserManager().loadUser(p.getUniqueId()).thenApplyAsync(user -> {
-                MetaNode currencyNode = user.getNodes(NodeType.META).stream().filter(node -> node.getMetaKey().equals("balance"))
-                        .findFirst().orElseThrow();
-                double balance = Double.parseDouble(currencyNode.getMetaValue());
-                return balance < amount;
-            });
-            return boolFuture.join();
+        try (Jedis jedis = pool.getResource()) {
+            double balance = getBalance(p, jedis);
+            return balance >= amount;
         }
     }
 
@@ -199,20 +149,20 @@ public class EconManager implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount) {
-        if (p.isOnline()) {
-            currency.put(p.getUniqueId(), Utils.round(getBalance(p) - amount, 2));
-            return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
+        try (Jedis jedis = pool.getResource()) {
+            return withdrawPlayer(p, amount, jedis);
+        }
+    }
+
+    public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount, Jedis jedis) {
+        String rawBalance = jedis.get(p.getName() + "#balance");
+        double balance = Double.parseDouble(rawBalance);
+        double newBalance = balance - amount;
+        if (newBalance < 0) {
+            return new EconomyResponse(amount, balance, ResponseType.FAILURE, "Insufficient funds");
         } else {
-            luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
-                 MetaNode oldNode = user.getNodes(NodeType.META).stream()
-                         .filter(node -> node.getMetaKey().equals("balance")).findFirst().orElseThrow();
-                 double balance = Double.parseDouble(oldNode.getMetaValue());
-                 double amountToRemove = Utils.round(balance - amount, 2);
-                 MetaNode newNode = MetaNode.builder("balance", String.valueOf(amountToRemove)).build();
-                 user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
-                 user.data().add(newNode);
-            });
-            return new EconomyResponse(amount, getBalance(p), EconomyResponse.ResponseType.SUCCESS, "");
+            jedis.set(p.getName() + "#balance", format(newBalance));
+            return new EconomyResponse(amount, newBalance, ResponseType.SUCCESS, "");
         }
     }
 
@@ -242,22 +192,15 @@ public class EconManager implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer p, double amount) {
-        if (p.isOnline()) {
-            currency.put(p.getUniqueId(), Utils.round(getBalance(p) + amount, 2));
-            return new EconomyResponse(amount, currency.get(p.getUniqueId()), EconomyResponse.ResponseType.SUCCESS, "");
-        } else {
-            luckPerms.getUserManager().modifyUser(p.getUniqueId(), user -> {
-                MetaNode currencyNode = user.getNodes(NodeType.META).stream()
-                                .filter(node -> node.getMetaKey().equals("balance")).findFirst()
-                                .orElseThrow();
-                double balance = Double.parseDouble(currencyNode.getMetaValue());
-                double newAmount = Utils.round(balance + amount, 2);
-                user.data().clear(NodeType.META.predicate(node -> node.getMetaKey().equals("balance")));
-                MetaNode newCurrency = MetaNode.builder("balance", String.valueOf(newAmount)).build();
-                user.data().add(newCurrency);
-            });
-            return new EconomyResponse(amount, getBalance(p), EconomyResponse.ResponseType.SUCCESS, "");
+        try (Jedis jedis = pool.getResource()) {
+            return depositPlayer(p, amount, jedis);
         }
+    }
+
+    public EconomyResponse depositPlayer(OfflinePlayer p, double amount, Jedis jedis) {
+        double balance = Double.parseDouble(jedis.get(p.getName() + "#balance"));
+        jedis.set(p.getName() + "#balance", format(balance + amount));
+        return new EconomyResponse(amount, balance + amount, ResponseType.SUCCESS, "");
     }
 
     @Override
@@ -268,21 +211,6 @@ public class EconManager implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer p, String worldName, double amount) {
         return depositPlayer(p, amount);
-    }
-
-    public @NotNull LinkedHashMap<UUID, Double> getSortedMap() {
-        HashMap<UUID, Double> unsortedMap = new HashMap<>();
-        LinkedHashMap<UUID, Double> sortedMap = new LinkedHashMap<>();
-        Stream<OfflinePlayer> stream = Arrays.stream(Bukkit.getOfflinePlayers());
-        stream.filter(player -> getBalance(player) > 0)
-                        .forEach(player -> unsortedMap.put(player.getUniqueId(), getBalance(player)));
-
-        unsortedMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
-
-        return sortedMap;
     }
 
     @Override
@@ -355,11 +283,13 @@ public class EconManager implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer p) {
-        if (!currency.containsKey(p.getUniqueId())) {
-            currency.put(p.getUniqueId(), 0.0);
-            savePlayer(p);
-            return true;
-        } else return false;
+        try (Jedis jedis = pool.getResource()) {
+            String balance = jedis.get(p.getName() + "#balance");
+            if (balance.equals("nil")) {
+                jedis.set(p.getName() + "#balance", "0.0");
+                return true;
+            } else return false;
+        }
     }
 
     @Override

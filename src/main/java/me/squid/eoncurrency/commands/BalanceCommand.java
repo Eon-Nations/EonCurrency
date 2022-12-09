@@ -1,7 +1,6 @@
 package me.squid.eoncurrency.commands;
 
 import me.squid.eoncurrency.Eoncurrency;
-import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.menus.EcoMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -10,15 +9,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 public class BalanceCommand implements CommandExecutor {
-
-    Eoncurrency plugin;
     EcoMenu ecoMenu;
 
     public BalanceCommand(Eoncurrency plugin, EcoMenu ecoMenu) {
-        this.plugin = plugin;
         this.ecoMenu = ecoMenu;
         plugin.getCommand("balance").setExecutor(this);
     }
@@ -38,7 +32,6 @@ public class BalanceCommand implements CommandExecutor {
                 }
             }
         }
-
         return true;
     }
 }

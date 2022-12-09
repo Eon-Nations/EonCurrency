@@ -33,7 +33,6 @@ public final class Eoncurrency extends JavaPlugin {
         new PayCommand(this, econManager);
         new BalanceCommand(this, ecoMenu);
         new ShopCommand(this, ecoMenu);
-        new BaltopCommand(this, econManager);
     }
 
     public void registerListeners(EcoMenu ecoMenu) {
