@@ -41,7 +41,7 @@ public final class Eoncurrency extends JavaPlugin {
     }
 
     public EconManager hookToVault() {
-        EconManager econManager = new EconManager(this);
+        EconManager econManager = new EconManager();
         Bukkit.getServicesManager().register(Economy.class, econManager, Eoncurrency.getPlugin(Eoncurrency.class), ServicePriority.Normal);
         Bukkit.getConsoleSender().sendMessage(Utils.chat("&aVault has successfully hooked to Economy"));
         return econManager;

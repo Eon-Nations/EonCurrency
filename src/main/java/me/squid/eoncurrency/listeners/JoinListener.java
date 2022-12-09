@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class JoinListener implements Listener {
 
@@ -23,15 +22,6 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        if (!econManager.hasAccount(p)) {
-            econManager.createPlayerAccount(e.getPlayer());
-        } else {
-            econManager.loadPlayer(e.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void onLeave(PlayerQuitEvent e) {
-        econManager.savePlayer(e.getPlayer());
+        econManager.createPlayerAccount(p);
     }
 }

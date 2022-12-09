@@ -16,7 +16,8 @@ public class EconManager implements Economy {
     JedisPool pool;
 
     public EconManager() {
-        this.pool = new JedisPool("localhost");
+        String serverURL = System.getProperty("SERVER_URL");
+        this.pool = new JedisPool(serverURL);
     }
 
     @Override
