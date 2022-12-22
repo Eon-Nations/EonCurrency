@@ -17,15 +17,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
+    private Utils() { }
 
     public static @NotNull String chat (String s){
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static ItemStack createItem(Inventory inv, Material material, int amount, int invSlot, String displayName, String... loreString){
-        ItemStack item;
-        item = new ItemStack(material, amount);
+        ItemStack item = new ItemStack(material, amount);
         List<String> lore = new ArrayList<>(Arrays.asList(loreString));
         ItemMeta meta = item.getItemMeta();
 
@@ -87,11 +87,5 @@ public class Utils {
                             .append(Component.text("]").color(gray)));
             default -> Component.text("Invalid");
         };
-    }
-
-    public static double round(double exp, int places) {
-        BigDecimal bd = new BigDecimal(exp, MathContext.DECIMAL32);
-        bd = bd.setScale(places, RoundingMode.HALF_EVEN);
-        return bd.doubleValue();
     }
 }

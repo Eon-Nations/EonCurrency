@@ -17,7 +17,7 @@ public class EcoMenu {
         this.econManager = econManager;
     }
 
-    public Inventory Main (Player p){
+    public Inventory Main (Player p) {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCurrency Menu"));
 
         Utils.createItem(inv, Material.EMERALD_BLOCK, 1, 12, "&5&lEon Shop");

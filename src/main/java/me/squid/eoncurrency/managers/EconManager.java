@@ -8,16 +8,21 @@ import redis.clients.jedis.JedisPool;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import java.text.DecimalFormat;
+import redis.clients.jedis.exceptions.JedisConnectionException;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class EconManager implements Economy {
 
     JedisPool pool;
+    private static final int DEC_PLACES = 2;
+    static final String BALANCE = "#balance";
 
-    public EconManager() {
-        String serverURL = System.getProperty("SERVER_URL");
-        this.pool = new JedisPool(serverURL);
+    public EconManager(JedisPool pool) {
+        this.pool = pool;
     }
 
     @Override
@@ -37,13 +42,14 @@ public class EconManager implements Economy {
 
     @Override
     public int fractionalDigits() {
-        return 0;
+        return DEC_PLACES;
     }
 
     @Override
     public String format(double amount) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        return df.format(amount);
+        BigDecimal bd = new BigDecimal(String.valueOf(amount), MathContext.DECIMAL32);
+        bd = bd.setScale(DEC_PLACES, RoundingMode.HALF_EVEN);
+        return bd.toString();
     }
 
     @Override
@@ -66,7 +72,9 @@ public class EconManager implements Economy {
 
     @Override
     public boolean hasAccount(OfflinePlayer p) {
-        return p.hasPlayedBefore();
+        try (Jedis jedis = pool.getResource()) {
+            return !jedis.get(p.getName() + BALANCE).equals("nil");
+        }
     }
 
     @Override
@@ -94,9 +102,9 @@ public class EconManager implements Economy {
 
     public double getBalance(OfflinePlayer p, Jedis jedis) {
         try {
-            String balance = jedis.get(p.getName() + "#balance");
+            String balance = jedis.get(p.getName() + BALANCE);
             return Double.parseDouble(balance);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | JedisConnectionException e) {
             return 0.0;
         }
     }
@@ -156,13 +164,13 @@ public class EconManager implements Economy {
     }
 
     public EconomyResponse withdrawPlayer(OfflinePlayer p, double amount, Jedis jedis) {
-        String rawBalance = jedis.get(p.getName() + "#balance");
+        String rawBalance = jedis.get(p.getName() + BALANCE);
         double balance = Double.parseDouble(rawBalance);
         double newBalance = balance - amount;
         if (newBalance < 0) {
             return new EconomyResponse(amount, balance, ResponseType.FAILURE, "Insufficient funds");
         } else {
-            jedis.set(p.getName() + "#balance", format(newBalance));
+            jedis.set(p.getName() + BALANCE, format(newBalance));
             return new EconomyResponse(amount, newBalance, ResponseType.SUCCESS, "");
         }
     }
@@ -194,14 +202,13 @@ public class EconManager implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer p, double amount) {
         try (Jedis jedis = pool.getResource()) {
-            return depositPlayer(p, amount, jedis);
+            double balance = Double.parseDouble(jedis.get(p.getName() + BALANCE));
+            jedis.set(p.getName() + BALANCE, format(balance + amount));
+            return new EconomyResponse(amount, balance + amount, ResponseType.SUCCESS, "");
+        } catch (NumberFormatException e) {
+            if (createPlayerAccount(p)) return depositPlayer(p, amount);
+            else return new EconomyResponse(amount, 0.0, ResponseType.FAILURE, "Corrupt record");
         }
-    }
-
-    public EconomyResponse depositPlayer(OfflinePlayer p, double amount, Jedis jedis) {
-        double balance = Double.parseDouble(jedis.get(p.getName() + "#balance"));
-        jedis.set(p.getName() + "#balance", format(balance + amount));
-        return new EconomyResponse(amount, balance + amount, ResponseType.SUCCESS, "");
     }
 
     @Override
@@ -271,7 +278,7 @@ public class EconManager implements Economy {
 
     @Override
     public List<String> getBanks() {
-        return null;
+        return List.of();
     }
 
     @Override
@@ -285,11 +292,15 @@ public class EconManager implements Economy {
     @Override
     public boolean createPlayerAccount(OfflinePlayer p) {
         try (Jedis jedis = pool.getResource()) {
-            String balance = jedis.get(p.getName() + "#balance");
-            if (balance.equals("nil")) {
-                jedis.set(p.getName() + "#balance", "0.0");
+            String balance = jedis.get(p.getName() + BALANCE);
+            try {
+                // Throw away value to see if the parsing the double was successful
+                Double.parseDouble(balance);
+                return false;
+            } catch (NumberFormatException e) {
+                jedis.set(p.getName() + BALANCE, "0.0");
                 return true;
-            } else return false;
+            }
         }
     }
 

@@ -10,12 +10,16 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import redis.clients.jedis.JedisPool;
 
 public final class Eoncurrency extends JavaPlugin {
     EconManager econManager;
+    JedisPool pool;
+
     @Override
     public void onEnable() {
         econManager = hookToVault();
+        pool = setupPool();
         saveDefaultConfig();
         EcoMenu ecoMenu = new EcoMenu(econManager);
         registerCommands(ecoMenu);
@@ -40,9 +44,14 @@ public final class Eoncurrency extends JavaPlugin {
         new ShopMenuListener(this, ecoMenu, econManager);
     }
 
+    public JedisPool setupPool() {
+        String serverURL = System.getProperty("REDIS_URL");
+        return new JedisPool(serverURL);
+    }
+
     public EconManager hookToVault() {
-        EconManager econManager = new EconManager();
-        Bukkit.getServicesManager().register(Economy.class, econManager, Eoncurrency.getPlugin(Eoncurrency.class), ServicePriority.Normal);
+        EconManager econ = new EconManager(pool);
+        Bukkit.getServicesManager().register(Economy.class, econ, JavaPlugin.getPlugin(Eoncurrency.class), ServicePriority.Normal);
         Bukkit.getConsoleSender().sendMessage(Utils.chat("&aVault has successfully hooked to Economy"));
         return econManager;
     }
