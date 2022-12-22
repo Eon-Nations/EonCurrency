@@ -3,17 +3,17 @@ package me.squid.eoncurrency.managers;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.List;
 
 public class EconManager implements Economy {
 
@@ -104,7 +104,7 @@ public class EconManager implements Economy {
         try {
             String balance = jedis.get(p.getName() + BALANCE);
             return Double.parseDouble(balance);
-        } catch (NumberFormatException | JedisConnectionException e) {
+        } catch (NumberFormatException | JedisException e) {
             return 0.0;
         }
     }
@@ -292,14 +292,16 @@ public class EconManager implements Economy {
     @Override
     public boolean createPlayerAccount(OfflinePlayer p) {
         try (Jedis jedis = pool.getResource()) {
-            String balance = jedis.get(p.getName() + BALANCE);
             try {
+                String balance = jedis.get(p.getName() + BALANCE);
                 // Throw away value to see if the parsing the double was successful
                 Double.parseDouble(balance);
                 return false;
             } catch (NumberFormatException e) {
                 jedis.set(p.getName() + BALANCE, "0.0");
                 return true;
+            } catch (JedisException e) {
+                return false;
             }
         }
     }
