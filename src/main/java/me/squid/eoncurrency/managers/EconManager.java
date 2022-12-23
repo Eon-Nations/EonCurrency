@@ -97,6 +97,8 @@ public class EconManager implements Economy {
     public double getBalance(OfflinePlayer p) {
         try (Jedis jedis = pool.getResource()) {
             return getBalance(p, jedis);
+        } catch (JedisException e) {
+            return 0.0;
         }
     }
 

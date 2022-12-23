@@ -2,7 +2,7 @@ name: EonCurrency
 version: ${project.version}
 main: me.squid.eoncurrency.Eoncurrency
 api-version: 1.16
-depend: [Vault, LuckPerms]
+depend: [Vault]
 authors: [Squid]
 description: Makes the custom currency made for Eon Survival
 loadbefore: [Rankup, MobArena, ChatControl, AuctionHouse]
