@@ -4,12 +4,9 @@ import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
-import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class BalanceMenu extends Gui {
@@ -35,6 +32,5 @@ public class BalanceMenu extends Gui {
                 .name("&aBalance: $" + economy.getBalance(getPlayer()))
                 .buildItem().build()
         );
-        getPlayer().getInventory().addItem(new ItemStack(Material.DIRT, 64));
     }
 }

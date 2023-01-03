@@ -3,19 +3,19 @@ package me.squid.eoncurrency;
 import me.lucko.helper.Services;
 import me.lucko.helper.config.ConfigFactory;
 import me.lucko.helper.config.ConfigurationNode;
-import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import me.lucko.helper.plugin.HelperPlugin;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 import me.lucko.helper.utils.CommandMapUtil;
-import me.squid.eoncurrency.commands.*;
-import me.squid.eoncurrency.listeners.JoinListener;
+import me.squid.eoncurrency.commands.BalanceCommand;
+import me.squid.eoncurrency.commands.EconomyCommandManager;
+import me.squid.eoncurrency.commands.PayCommand;
+import me.squid.eoncurrency.commands.ShopCommand;
 import me.squid.eoncurrency.listeners.ShopMenuListener;
 import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.menus.EcoMenu;
 import me.squid.eoncurrency.utils.Utils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -32,7 +32,7 @@ import java.io.File;
 public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
     EconManager econManager;
     JedisPool pool;
-    private CompositeTerminable registry;
+    CompositeTerminable registry;
 
     public Eoncurrency() {
         super();
@@ -43,6 +43,9 @@ public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
 
     public Eoncurrency(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
+        this.registry = CompositeTerminable.create();
+        this.pool = setupPool();
+        this.econManager = hookToVault();
     }
 
     @Override
@@ -69,7 +72,7 @@ public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
     }
 
     public void registerListeners(EcoMenu ecoMenu) {
-        new JoinListener(this, econManager);
+        // TODO Fix Join Listener
         new ShopMenuListener(this, ecoMenu, econManager);
     }
 

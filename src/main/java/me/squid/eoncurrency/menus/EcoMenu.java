@@ -1,7 +1,7 @@
 package me.squid.eoncurrency.menus;
 
-import me.squid.eoncurrency.managers.EconManager;
 import me.squid.eoncurrency.utils.Utils;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -11,44 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class EcoMenu {
-    EconManager econManager;
+    Economy eco;
 
-    public EcoMenu(EconManager econManager) {
-        this.econManager = econManager;
+    public EcoMenu(Economy econManager) {
+        this.eco = econManager;
     }
 
-    public Inventory Main (Player p) {
-        Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCurrency Menu"));
-
-        Utils.createItem(inv, Material.EMERALD_BLOCK, 1, 12, "&5&lEon Shop");
-        Utils.createItem(inv, Material.CLOCK, 1, 14, "&a&lEco Info"
-        , Utils.chat("&aBalance: $" + econManager.format(econManager.getBalance(p))));
-        Utils.createItem(inv, Material.ZOMBIE_HEAD, 1, 16, "&b&lMob Arena Shop");
-        Utils.makeDummySlots(inv);
-
-        return inv;
-    }
-
-    public Inventory Others(OfflinePlayer p) {
-        Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCurrency Menu"));
-
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-
-        if (p.getPlayer() != null) {
-            skullMeta.setPlayerProfile(p.getPlayer().getPlayerProfile());
-        }
-        skullMeta.setDisplayName(Utils.chat("&b" + p.getName()));
-        item.setItemMeta(skullMeta);
-
-        inv.setItem(4, item);
-        Utils.createItem(inv, Material.CLOCK, 1, 14, "&a&lEco Info"
-                , Utils.chat("&aBalance: $" + econManager.format(econManager.getBalance(p))));
-        Utils.makeDummySlots(inv);
-        return inv;
-    }
-
-    public Inventory ShopCategory(){
+    public Inventory ShopCategory() {
         Inventory inv = Bukkit.createInventory(null, 27, Utils.chat("&5&lCategories"));
 
         Utils.createItem(inv, Material.STONE_BRICKS, 1, 12, "&f&lBlocks");
