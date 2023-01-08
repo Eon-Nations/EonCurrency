@@ -1,7 +1,9 @@
 package me.squid.eoncurrency.utils;
 
+import me.squid.eoncurrency.Eoncurrency;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -9,15 +11,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
     private Utils() { }
+    private static final String PAY_PREFIX = "<gray>[<blue><bold>EonEco</bold></blue>] ";
 
     public static @NotNull String chat (String s){
         return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    public static Component configMessage(Eoncurrency plugin, String path, Map<String, String> config) {
+        String rawMessage = Optional.ofNullable(plugin.getConfig().getString(path)).orElse("Path not found");
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            rawMessage = rawMessage.replace(entry.getKey(), entry.getValue());
+        }
+        return MiniMessage.miniMessage().deserialize(PAY_PREFIX + rawMessage);
     }
 
     @Deprecated(forRemoval = true)

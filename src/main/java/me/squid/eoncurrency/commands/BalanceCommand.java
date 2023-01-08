@@ -9,18 +9,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BalanceCommand implements CommandExecutor {
-    Economy economy;
+    Eoncurrency plugin;
 
-    public BalanceCommand(Eoncurrency plugin, Economy economy) {
-        this.economy = economy;
+    public BalanceCommand(Eoncurrency plugin) {
+        this.plugin = plugin;
         plugin.getCommand("balance").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player p) {
-            sender.sendMessage("Balance: " + economy.getBalance(((Player) sender).getPlayer()));
-            BalanceMenu menu = new BalanceMenu(p, economy);
+            Economy eco = plugin.getService(Economy.class);
+            BalanceMenu menu = new BalanceMenu(p, eco);
             menu.redraw();
             menu.open();
         }

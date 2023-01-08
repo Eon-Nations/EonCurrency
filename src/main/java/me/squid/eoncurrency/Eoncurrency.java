@@ -28,8 +28,9 @@ import org.jetbrains.annotations.Nullable;
 import redis.clients.jedis.JedisPool;
 
 import java.io.File;
+import java.util.Optional;
 
-public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
+public class Eoncurrency extends JavaPlugin implements HelperPlugin {
     EconManager econManager;
     JedisPool pool;
     CompositeTerminable registry;
@@ -66,8 +67,8 @@ public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
     @SuppressWarnings("ConstantConditions")
     public void registerCommands(EcoMenu ecoMenu) {
         getCommand("economy").setExecutor(new EconomyCommandManager(this, econManager));
-        new PayCommand(this, econManager);
-        new BalanceCommand(this, econManager);
+        new PayCommand(this);
+        new BalanceCommand(this);
         new ShopCommand(this, ecoMenu);
     }
 
@@ -77,11 +78,8 @@ public final class Eoncurrency extends JavaPlugin implements HelperPlugin {
     }
 
     public JedisPool setupPool() {
-        String serverURL = System.getProperty("REDIS_URL");
-        if (serverURL == null) {
-            serverURL = "redis://172.20.0.3";
-        }
-        return new JedisPool(serverURL, 6379);
+        String serverURL = Optional.ofNullable(System.getProperty("REDIS_URL")).orElse("redis://localhost:6379");
+        return new JedisPool(serverURL);
     }
 
     public EconManager hookToVault() {
