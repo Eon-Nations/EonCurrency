@@ -47,3 +47,4 @@ jobs:
           port: 2022
           local-dir: deploy-jar/
           server-dir: plugins/
+          protocol: ftps
