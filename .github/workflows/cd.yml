@@ -32,15 +32,10 @@ jobs:
 
       - name: Build Project
         run: mvn -B package -f pom.xml
-
-      - name: Retrieve SSH key
-        run: |
-          mkdir ~/.ssh/
-          echo "$MAIN_SERVER_PRIV_KEY" >action-key
-          sudo chmod 600 action-key
-          ssh-keyscan -H mceonsurvival.com > ~/.ssh/known_hosts
-        env:
-            MAIN_SERVER_PRIV_KEY: ${{ secrets.MAIN_SERVER_PRIV_KEY }}
       
       - name: Upload JAR to Server
-        run: scp -i action-key target/eoncurrency-1.0.jar opc@mceonsurvival.com:~/papermc/plugins
+        run: |
+          lftp --env-password $(SERVER_FTP_LINK) -e "cd plugins; put target/eoncurrency-1.0.jar; bye"
+        env:
+          SERVER_FTP_LINK: ${{ secrets.SERVER_FTP_LINK }}
+          LFTP_PASSWORD: ${{ secrets.LFTP_PASSWORD }}
