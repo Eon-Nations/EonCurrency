@@ -23,6 +23,7 @@ public class EconManager implements Economy {
     private static final int DEC_PLACES = 2;
     public static final String BALANCE = "#balance";
     private final HashMap<UUID, Double> backupMap = new HashMap<>();
+    private final static EconomyResponse NOT_SUPPORTED = new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Banks not supported");
 
     public EconManager(JedisPool pool) {
         this.pool = pool;
@@ -228,57 +229,57 @@ public class EconManager implements Economy {
 
     @Override
     public EconomyResponse createBank(String name, String player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse createBank(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse deleteBank(String name) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankBalance(String name) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankOwner(String name, String playerName) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankOwner(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankMember(String name, String playerName) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankMember(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
