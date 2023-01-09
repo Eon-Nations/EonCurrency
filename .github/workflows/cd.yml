@@ -44,5 +44,6 @@ jobs:
           server: ${{ secrets.FTP_LINK }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: target/eoncurrency-1.0.jar
+          port: 2022
+          local-dir: deploy-jar/
           server-dir: plugins/
