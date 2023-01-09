@@ -10,3 +10,12 @@ shop-prices:
   phantom: 100
   item_frame: 750
   shulker: 750
+
+# Pay Message
+# <player> is the player in the context (sender or receiver)
+# <amount> is how much money is being exchanged
+receiver-pay: "<blue><player> has sent you $<amount>"
+sender-pay: "<blue><player> has received $<amount>"
+usage-pay: "<blue>Correct usage: /pay <player> <amount>"
+invalid-target: "<player> does not exist or is offline"
+insufficient-funds: "You do not have enough funds to carry out the transaction"

@@ -1,31 +1,36 @@
 package me.squid.eoncurrency.menus;
 
-import fr.dwightstudio.dsmapi.MenuView;
-import fr.dwightstudio.dsmapi.SimpleMenu;
-import fr.dwightstudio.dsmapi.pages.PageType;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
+import me.lucko.helper.item.ItemStackBuilder;
+import me.lucko.helper.menu.Gui;
+import me.lucko.helper.menu.scheme.MenuPopulator;
+import me.lucko.helper.menu.scheme.MenuScheme;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.SkullMeta;
 
-public class BalanceMenu extends SimpleMenu {
+public class BalanceMenu extends Gui {
 
-    @Override
-    public String getName() {
-        return "<green>Balance Menu</green>";
+    Economy economy;
+
+    public BalanceMenu(Player player, Economy economy) {
+        super(player, 1, "&aBalance Menu");
+        this.economy = economy;
     }
 
-    @Override
-    public ItemStack[] getContent() {
-        ItemStack[][] contents = PageType.CHEST.getBlank2DArray();
-        return PageType.CHEST.flatten(contents);
-    }
+    private static final MenuScheme DISPLAY = new MenuScheme().mask("100010000");
 
     @Override
-    public PageType getPageType() {
-        return null;
-    }
-
-    @Override
-    public void onClick(MenuView menuView, ClickType clickType, int i, ItemStack itemStack) {
-        // TODO Implementation
+    public void redraw() {
+        MenuPopulator populator = DISPLAY.newPopulator(this);
+        populator.accept(ItemStackBuilder.of(Material.PLAYER_HEAD)
+                .transformMeta(meta -> ((SkullMeta) meta).setPlayerProfile(getPlayer().getPlayerProfile()))
+                .name("&bName: " + getPlayer().getName())
+                .buildItem().build()
+        );
+        populator.accept(ItemStackBuilder.of(Material.CLOCK)
+                .name("&aBalance: $" + economy.getBalance(getPlayer()))
+                .buildItem().build()
+        );
     }
 }

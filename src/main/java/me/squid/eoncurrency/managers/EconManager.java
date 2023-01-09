@@ -13,13 +13,17 @@ import redis.clients.jedis.exceptions.JedisException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class EconManager implements Economy {
 
     JedisPool pool;
     private static final int DEC_PLACES = 2;
-    static final String BALANCE = "#balance";
+    public static final String BALANCE = "#balance";
+    private final HashMap<UUID, Double> backupMap = new HashMap<>();
+    private final static EconomyResponse NOT_SUPPORTED = new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "Banks not supported");
 
     public EconManager(JedisPool pool) {
         this.pool = pool;
@@ -74,6 +78,8 @@ public class EconManager implements Economy {
     public boolean hasAccount(OfflinePlayer p) {
         try (Jedis jedis = pool.getResource()) {
             return !jedis.get(p.getName() + BALANCE).equals("nil");
+        } catch (JedisException e) {
+            return false;
         }
     }
 
@@ -97,13 +103,15 @@ public class EconManager implements Economy {
     public double getBalance(OfflinePlayer p) {
         try (Jedis jedis = pool.getResource()) {
             return getBalance(p, jedis);
+        } catch (JedisException e) {
+            return 0.0;
         }
     }
 
     public double getBalance(OfflinePlayer p, Jedis jedis) {
         try {
             String balance = jedis.get(p.getName() + BALANCE);
-            return Double.parseDouble(balance);
+            return balance != null ? Double.parseDouble(balance) : 0.0;
         } catch (NumberFormatException | JedisException e) {
             return 0.0;
         }
@@ -127,10 +135,8 @@ public class EconManager implements Economy {
 
     @Override
     public boolean has(OfflinePlayer p, double amount) {
-        try (Jedis jedis = pool.getResource()) {
-            double balance = getBalance(p, jedis);
-            return balance >= amount;
-        }
+        double balance = getBalance(p);
+        return balance >= amount;
     }
 
     @Override
@@ -202,7 +208,7 @@ public class EconManager implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer p, double amount) {
         try (Jedis jedis = pool.getResource()) {
-            double balance = Double.parseDouble(jedis.get(p.getName() + BALANCE));
+            double balance = getBalance(p, jedis);
             jedis.set(p.getName() + BALANCE, format(balance + amount));
             return new EconomyResponse(amount, balance + amount, ResponseType.SUCCESS, "");
         } catch (NumberFormatException e) {
@@ -223,57 +229,57 @@ public class EconManager implements Economy {
 
     @Override
     public EconomyResponse createBank(String name, String player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse createBank(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse deleteBank(String name) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankBalance(String name) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankOwner(String name, String playerName) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankOwner(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankMember(String name, String playerName) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
     public EconomyResponse isBankMember(String name, OfflinePlayer player) {
-        return null;
+        return NOT_SUPPORTED;
     }
 
     @Override
