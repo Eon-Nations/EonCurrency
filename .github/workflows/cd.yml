@@ -23,9 +23,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Install LFTP
-        run: sudo apt install lftp -y
-
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
@@ -35,10 +32,17 @@ jobs:
 
       - name: Build Project
         run: mvn -B package -f pom.xml
-      
-      - name: Upload JAR to Server
+
+      - name: Move JAR to own folder
         run: |
-          lftp --env-password $SERVER_FTP_LINK -e "cd plugins; put target/eoncurrency-1.0.jar; bye"
-        env:
-          SERVER_FTP_LINK: ${{ secrets.SERVER_FTP_LINK }}
-          LFTP_PASSWORD: ${{ secrets.LFTP_PASSWORD }}
+          mkdir deploy-jar
+          cp target/eoncurrency-1.0.jar deploy-jar
+      
+      - name: Upload Plugin JAR to Server
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_LINK }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: target/eoncurrency-1.0.jar
+          server-dir: plugins/
