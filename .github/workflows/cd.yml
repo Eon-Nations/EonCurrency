@@ -23,9 +23,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Install PSCP
-        run: sudo apt install pscp -y
-
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
@@ -42,7 +39,7 @@ jobs:
           cp target/eoncurrency-1.0.jar deploy-jar
       
       - name: Upload Plugin JAR to Server
-        run: pscp -pw $FTP_PASSWORD target/eoncurrency-1.0.jar $FTP_USER@$FTP_LINK:/plugins/
+        run: sshpass -p $FTP_PASSWORD scp target/eoncurrency-1.0.jar $FTP_USER@$FTP_LINK:/plugins
         env:
           FTP_LINK: ${{ secrets.FTP_LINK }}
           FTP_USER: ${{ secrets.FTP_USER }}
