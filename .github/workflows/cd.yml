@@ -39,10 +39,8 @@ jobs:
           cp target/eoncurrency-1.0.jar deploy-jar
       
       - name: Upload Plugin JAR to Server
-        uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
-        with:
-          ftp_host: ${{ secrets.FTP_LINK }}
-          ftp_username: ${{ secrets.FTP_USER }}
-          ftp_password: ${{ secrets.FTP_PASSWORD }}
-          local_source_dir: deploy-jar/
-          dist_target_dir: plugins/
+        run: pscp -pw $FTP_PASSWORD target/eoncurrency-1.0.jar $FTP_USER@$FTP_LINK:/plugins/
+        env:
+          FTP_LINK: ${{ secrets.FTP_LINK }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
