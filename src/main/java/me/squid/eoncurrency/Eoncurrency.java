@@ -55,7 +55,7 @@ public class Eoncurrency extends JavaPlugin implements HelperPlugin {
         this.econManager = hookToVault();
         saveDefaultConfig();
         EcoMenu ecoMenu = new EcoMenu(econManager);
-        registerCommands(ecoMenu);
+        registerCommands();
         registerListeners(ecoMenu);
     }
 
@@ -65,11 +65,11 @@ public class Eoncurrency extends JavaPlugin implements HelperPlugin {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void registerCommands(EcoMenu ecoMenu) {
+    public void registerCommands() {
         getCommand("economy").setExecutor(new EconomyCommandManager(this, econManager));
         new PayCommand(this);
         new BalanceCommand(this);
-        new ShopCommand(this, ecoMenu);
+        new ShopCommand(this);
     }
 
     public void registerListeners(EcoMenu ecoMenu) {
