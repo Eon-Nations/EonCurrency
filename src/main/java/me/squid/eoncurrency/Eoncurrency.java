@@ -73,7 +73,6 @@ public class Eoncurrency extends JavaPlugin implements HelperPlugin {
     }
 
     public void registerListeners(EcoMenu ecoMenu) {
-        // TODO Fix Join Listener
         new ShopMenuListener(this, ecoMenu, econManager);
     }
 
