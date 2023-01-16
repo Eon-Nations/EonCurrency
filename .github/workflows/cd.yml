@@ -37,10 +37,12 @@ jobs:
         run: |
           mkdir deploy-jar
           cp target/eoncurrency-1.0.jar deploy-jar
-      
-      - name: Upload Plugin JAR to Server
-        run: sshpass -p $FTP_PASSWORD scp target/eoncurrency-1.0.jar $FTP_USER@$FTP_LINK:/plugins
-        env:
-          FTP_LINK: ${{ secrets.FTP_LINK }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+
+      - name: Upload JAR to server
+        uses: jakejarvis/ftp-deploy-action@v2
+        with:
+          ftp-username: ${{ secrets.FTP_USER }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          ftp-server: ${{ secrets.FTP_LINK }}
+          local-dir: /deploy-jar
+          remote-dir: /plugins/
