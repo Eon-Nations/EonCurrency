@@ -45,6 +45,7 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
+          port: 2022
           local_dir: deploy-jar/
           remote_dir: plugins/
           dry-run: true
