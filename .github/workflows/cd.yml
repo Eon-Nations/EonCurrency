@@ -39,10 +39,12 @@ jobs:
           cp target/eoncurrency-1.0.jar deploy-jar
 
       - name: Upload file to SFTP
-        uses: adonespitogo/sftp-deploy-action@v1
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           host: ${{ secrets.FTP_LINK }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: target/eoncurrency-1.0.jar
+          protocol: ftps
+          local_dir: deploy-jar/
           remote_dir: plugins/
+          dry-run: true
