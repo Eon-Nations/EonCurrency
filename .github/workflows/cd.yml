@@ -38,11 +38,11 @@ jobs:
           mkdir deploy-jar
           cp target/eoncurrency-1.0.jar deploy-jar
 
-      - name: Upload JAR to server
-        uses: jakejarvis/ftp-deploy-action@v2
+      - name: Upload file to SFTP
+        uses: adonespitogo/sftp-deploy-action@v1
         with:
-          ftp-username: ${{ secrets.FTP_USER }}
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
-          ftp-server: ${{ secrets.FTP_LINK }}
-          local-dir: /deploy-jar
-          remote-dir: /plugins/
+          host: ${{ secrets.FTP_LINK }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_dir: target/eoncurrency-1.0.jar
+          remote_dir: plugins/
