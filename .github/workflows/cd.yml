@@ -38,14 +38,15 @@ jobs:
           mkdir deploy-jar
           cp target/eoncurrency-1.0.jar deploy-jar
 
-      - name: Upload file to SFTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      - name: deploy file to server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-          host: ${{ secrets.FTP_LINK }}
           username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          server: ${{ secrets.FTP_LINK }}
           port: 2022
-          local_dir: deploy-jar/
-          remote_dir: plugins/
-          dry-run: true
+          password: ${{ secrets.FTP_PASSWORD }}
+          ssh_private_key: ''
+          local_path: 'target/eoncurrency-1.0.jar'
+          remote_path: '/plugins'
+          sftp_only: true
+          sftpArgs: '-o ConnectTimeout=5'
