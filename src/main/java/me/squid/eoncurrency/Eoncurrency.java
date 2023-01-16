@@ -3,6 +3,7 @@ package me.squid.eoncurrency;
 import me.lucko.helper.Services;
 import me.lucko.helper.config.ConfigFactory;
 import me.lucko.helper.config.ConfigurationNode;
+import me.lucko.helper.internal.LoaderUtils;
 import me.lucko.helper.plugin.HelperPlugin;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 import me.lucko.helper.utils.CommandMapUtil;
@@ -37,20 +38,17 @@ public class Eoncurrency extends JavaPlugin implements HelperPlugin {
 
     public Eoncurrency() {
         super();
-        this.registry = CompositeTerminable.create();
-        this.pool = setupPool();
-        this.econManager = hookToVault();
     }
 
     public Eoncurrency(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
-        this.registry = CompositeTerminable.create();
-        this.pool = setupPool();
-        this.econManager = hookToVault();
+        LoaderUtils.getMainThread();
+        LoaderUtils.forceSetPlugin(this);
     }
 
     @Override
     public void onEnable() {
+        this.registry = CompositeTerminable.create();
         this.pool = setupPool();
         this.econManager = hookToVault();
         saveDefaultConfig();
@@ -77,13 +75,12 @@ public class Eoncurrency extends JavaPlugin implements HelperPlugin {
     }
 
     public JedisPool setupPool() {
-        String serverURL = Optional.ofNullable(System.getProperty("REDIS_URL")).orElse("redis://localhost:6379");
+        String serverURL = Optional.ofNullable(getConfig().getString("redis-url")).orElse("redis://localhost:6379");
         return new JedisPool(serverURL);
     }
 
     public EconManager hookToVault() {
         EconManager econ = new EconManager(pool);
-        Bukkit.getServicesManager().register(Economy.class, econ, this, ServicePriority.Normal);
         Bukkit.getConsoleSender().sendMessage(Utils.chat("&aVault has successfully hooked to Economy"));
         return econ;
     }
